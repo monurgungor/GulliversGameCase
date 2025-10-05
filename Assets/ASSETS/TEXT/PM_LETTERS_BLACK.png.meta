@@ -1,0 +1,827 @@
+fileFormatVersion: 2
+guid: 045860339db567c48b0c87f396feda28
+TextureImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 12
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMasterTextureLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 3
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: PM_LETTERS_BLACK_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 546
+        width: 141.375
+        height: 182
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9dde5175476873c4a8c886aa196edb3a
+      internalID: 1256599514
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PM_LETTERS_BLACK_1
+      rect:
+        serializedVersion: 2
+        x: 141
+        y: 546
+        width: 141.375
+        height: 182
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 512e43805036f53489b71f3ad35bfac9
+      internalID: -1783112367
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PM_LETTERS_BLACK_2
+      rect:
+        serializedVersion: 2
+        x: 282
+        y: 546
+        width: 141.375
+        height: 182
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: bc5eddffcc07ca5488f491d2a959bb05
+      internalID: -212958855
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PM_LETTERS_BLACK_3
+      rect:
+        serializedVersion: 2
+        x: 423
+        y: 546
+        width: 141.375
+        height: 182
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 44ce3e9678f0a1a4b85b5b089a6e2340
+      internalID: -558409979
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PM_LETTERS_BLACK_4
+      rect:
+        serializedVersion: 2
+        x: 564
+        y: 546
+        width: 141.375
+        height: 182
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7f40278a57caea449ad5fd49077ed305
+      internalID: -1734789261
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PM_LETTERS_BLACK_5
+      rect:
+        serializedVersion: 2
+        x: 705
+        y: 546
+        width: 141.375
+        height: 182
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 65a2bff82f072eb4ea63064dbed7bbaa
+      internalID: 1758166785
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PM_LETTERS_BLACK_6
+      rect:
+        serializedVersion: 2
+        x: 846
+        y: 546
+        width: 141.375
+        height: 182
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a75c846c1fca12140918b31cf5595caf
+      internalID: 1143525716
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PM_LETTERS_BLACK_7
+      rect:
+        serializedVersion: 2
+        x: 987
+        y: 546
+        width: 141.375
+        height: 182
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e38c56b2201be314489eed39ef063467
+      internalID: 911183342
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PM_LETTERS_BLACK_8
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 364
+        width: 141.375
+        height: 182
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 759358d0e220baa4390f7b8da4de6588
+      internalID: 331936928
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PM_LETTERS_BLACK_9
+      rect:
+        serializedVersion: 2
+        x: 141
+        y: 364
+        width: 141.375
+        height: 182
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 892bc7b9dcb63ef47b0dfc47380b8399
+      internalID: 1072075405
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PM_LETTERS_BLACK_10
+      rect:
+        serializedVersion: 2
+        x: 282
+        y: 364
+        width: 141.375
+        height: 182
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4c52a3dd05df2424983942e4da981571
+      internalID: -22326508
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PM_LETTERS_BLACK_11
+      rect:
+        serializedVersion: 2
+        x: 423
+        y: 364
+        width: 141.375
+        height: 182
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a9ef48f9e8a055b419b97fd4acd14ebd
+      internalID: 512687187
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PM_LETTERS_BLACK_12
+      rect:
+        serializedVersion: 2
+        x: 564
+        y: 364
+        width: 141.375
+        height: 182
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d9f208911a7ab0041bc45cd51d60fdbc
+      internalID: -479786268
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PM_LETTERS_BLACK_13
+      rect:
+        serializedVersion: 2
+        x: 705
+        y: 364
+        width: 141.375
+        height: 182
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9d307be63394cc740a4fdd8053e73380
+      internalID: -1149966541
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PM_LETTERS_BLACK_14
+      rect:
+        serializedVersion: 2
+        x: 846
+        y: 364
+        width: 141.375
+        height: 182
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: badc6d1397969c04f8db812a53ed4cde
+      internalID: 1079285544
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PM_LETTERS_BLACK_15
+      rect:
+        serializedVersion: 2
+        x: 987
+        y: 364
+        width: 141.375
+        height: 182
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 02177f3a6979f9a47b59eebfb7a6ffcf
+      internalID: 577240206
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PM_LETTERS_BLACK_16
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 182
+        width: 141.375
+        height: 182
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e1f71947f4ecae145886e41f69aaf1f7
+      internalID: 939196134
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PM_LETTERS_BLACK_17
+      rect:
+        serializedVersion: 2
+        x: 141
+        y: 182
+        width: 141.375
+        height: 182
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4faffa2b324be504587ac605a137dce2
+      internalID: -392531684
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PM_LETTERS_BLACK_18
+      rect:
+        serializedVersion: 2
+        x: 282
+        y: 182
+        width: 141.375
+        height: 182
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d2865f1029a61d74d92a848fb9418902
+      internalID: 603864833
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PM_LETTERS_BLACK_19
+      rect:
+        serializedVersion: 2
+        x: 423
+        y: 182
+        width: 141.375
+        height: 182
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1b51ea3c73162674e90ba18001ecb1c2
+      internalID: 1749062844
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PM_LETTERS_BLACK_20
+      rect:
+        serializedVersion: 2
+        x: 564
+        y: 182
+        width: 141.375
+        height: 182
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 217aa83d0b9f77c44af76c138b7a720c
+      internalID: -560244986
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PM_LETTERS_BLACK_21
+      rect:
+        serializedVersion: 2
+        x: 705
+        y: 182
+        width: 141.375
+        height: 182
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d43fb08113c47a14db2ab662b0496fc5
+      internalID: 1264362890
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PM_LETTERS_BLACK_22
+      rect:
+        serializedVersion: 2
+        x: 846
+        y: 182
+        width: 141.375
+        height: 182
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b3466ea6d35caf8499fe26ea692f0068
+      internalID: -1832870927
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PM_LETTERS_BLACK_23
+      rect:
+        serializedVersion: 2
+        x: 987
+        y: 182
+        width: 141.375
+        height: 182
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 449c577320288244fbd150b214361fd5
+      internalID: -1557400436
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PM_LETTERS_BLACK_24
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 141.375
+        height: 182
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 56b250f20d89b594d8652c155ad93631
+      internalID: 266968405
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PM_LETTERS_BLACK_25
+      rect:
+        serializedVersion: 2
+        x: 141
+        y: 0
+        width: 141.375
+        height: 182
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6e20d705f72c6dd42880f060588cfb21
+      internalID: -454810090
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PM_LETTERS_BLACK_26
+      rect:
+        serializedVersion: 2
+        x: 282
+        y: 0
+        width: 141.375
+        height: 182
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e2f8ec700923cc944a248810c931b50d
+      internalID: 1198599998
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PM_LETTERS_BLACK_27
+      rect:
+        serializedVersion: 2
+        x: 423
+        y: 0
+        width: 141.375
+        height: 182
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d76100cec50929a46a9c63ea00bbeb96
+      internalID: 395879739
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PM_LETTERS_BLACK_28
+      rect:
+        serializedVersion: 2
+        x: 564
+        y: 0
+        width: 141.375
+        height: 182
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4c6b00c8f6556064893d72f2829bc399
+      internalID: -1500861773
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PM_LETTERS_BLACK_29
+      rect:
+        serializedVersion: 2
+        x: 705
+        y: 0
+        width: 141.375
+        height: 182
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a1ea8ed0ad858004cb7b7e475ac6d9f6
+      internalID: -4791839
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PM_LETTERS_BLACK_30
+      rect:
+        serializedVersion: 2
+        x: 846
+        y: 0
+        width: 141.375
+        height: 182
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0172bff103c6c5f41989b424b4d607af
+      internalID: 521322230
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PM_LETTERS_BLACK_31
+      rect:
+        serializedVersion: 2
+        x: 987
+        y: 0
+        width: 141.375
+        height: 182
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a344138b933be4f4f8986af6143f2ec3
+      internalID: 1111689985
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    nameFileIdTable:
+      PM_LETTERS_BLACK_0: 1256599514
+      PM_LETTERS_BLACK_1: -1783112367
+      PM_LETTERS_BLACK_10: -22326508
+      PM_LETTERS_BLACK_11: 512687187
+      PM_LETTERS_BLACK_12: -479786268
+      PM_LETTERS_BLACK_13: -1149966541
+      PM_LETTERS_BLACK_14: 1079285544
+      PM_LETTERS_BLACK_15: 577240206
+      PM_LETTERS_BLACK_16: 939196134
+      PM_LETTERS_BLACK_17: -392531684
+      PM_LETTERS_BLACK_18: 603864833
+      PM_LETTERS_BLACK_19: 1749062844
+      PM_LETTERS_BLACK_2: -212958855
+      PM_LETTERS_BLACK_20: -560244986
+      PM_LETTERS_BLACK_21: 1264362890
+      PM_LETTERS_BLACK_22: -1832870927
+      PM_LETTERS_BLACK_23: -1557400436
+      PM_LETTERS_BLACK_24: 266968405
+      PM_LETTERS_BLACK_25: -454810090
+      PM_LETTERS_BLACK_26: 1198599998
+      PM_LETTERS_BLACK_27: 395879739
+      PM_LETTERS_BLACK_28: -1500861773
+      PM_LETTERS_BLACK_29: -4791839
+      PM_LETTERS_BLACK_3: -558409979
+      PM_LETTERS_BLACK_30: 521322230
+      PM_LETTERS_BLACK_31: 1111689985
+      PM_LETTERS_BLACK_4: -1734789261
+      PM_LETTERS_BLACK_5: 1758166785
+      PM_LETTERS_BLACK_6: 1143525716
+      PM_LETTERS_BLACK_7: 911183342
+      PM_LETTERS_BLACK_8: 331936928
+      PM_LETTERS_BLACK_9: 1072075405
+  spritePackingTag: 
+  pSDRemoveMatte: 0
+  pSDShowRemoveMatteOption: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

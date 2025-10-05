@@ -1,0 +1,78 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!687078895 &4343727234628468602
+SpriteAtlas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: LevelPage
+  m_EditorData:
+    serializedVersion: 2
+    textureSettings:
+      serializedVersion: 2
+      anisoLevel: 1
+      compressionQuality: 50
+      maxTextureSize: 2048
+      textureCompression: 0
+      filterMode: 1
+      generateMipMaps: 0
+      readable: 0
+      crunchedCompression: 0
+      sRGB: 1
+    platformSettings:
+    - serializedVersion: 3
+      m_BuildTarget: DefaultTexturePlatform
+      m_MaxTextureSize: 1024
+      m_ResizeAlgorithm: 0
+      m_TextureFormat: -1
+      m_TextureCompression: 1
+      m_CompressionQuality: 50
+      m_CrunchedCompression: 0
+      m_AllowsAlphaSplitting: 0
+      m_Overridden: 0
+      m_AndroidETC2FallbackOverride: 0
+      m_ForceMaximumCompressionQuality_BC6H_BC7: 0
+    packingSettings:
+      serializedVersion: 2
+      padding: 4
+      blockOffset: 1
+      allowAlphaSplitting: 0
+      enableRotation: 1
+      enableTightPacking: 0
+      enableAlphaDilation: 0
+    secondaryTextureSettings: {}
+    variantMultiplier: 1
+    packables:
+    - {fileID: 102900000, guid: dc8891dec30e86148955831e4d71edbc, type: 3}
+    bindAsDefault: 1
+    isAtlasV2: 0
+    cachedData: {fileID: 0}
+  m_MasterAtlas: {fileID: 0}
+  m_PackedSprites:
+  - {fileID: 21300000, guid: 9bc9921079e62e9489538ec5f0384843, type: 3}
+  - {fileID: 1056485633, guid: bd4b56b2cbbbd724899ab01e6f750e7a, type: 3}
+  - {fileID: 21300000, guid: e95cf4257a7b21a45927a80611486cfa, type: 3}
+  - {fileID: 21300000, guid: dd58967645b07dd44b5d61e7ac356b94, type: 3}
+  - {fileID: -416967884, guid: e464120795ddb884f9f15fa94e3d1623, type: 3}
+  - {fileID: 959134410, guid: e57f6937a98427e49ac3caab0082732a, type: 3}
+  - {fileID: -1516486133, guid: 529bd66af24fe77438bc0f8e377a6d9e, type: 3}
+  - {fileID: 21300000, guid: a022ae7a4eb108745b2b06aa8d3adb55, type: 3}
+  - {fileID: -1609001111, guid: 90d0fbfb183a04349831bdbaec59d4af, type: 3}
+  - {fileID: 21300000, guid: 2b8168cc3f6cff44fbf14f32470571cb, type: 3}
+  - {fileID: 412431731, guid: b0ea447f4e41df94a91a88f55c272b1a, type: 3}
+  m_PackedSpriteNamesToIndex:
+  - LOCK
+  - POPUP_CONTAINER_SHINE_0
+  - POPUP_TITLE
+  - POPUP_SCROLL_SHADE
+  - POPUP_CONTAINER_COLOR_0
+  - POPUP_BASE_COLOR_0
+  - POPUP_BASE_SHADE_0
+  - X
+  - POPUP_BASE_SHADOW_0
+  - LEVELCARD_HOLDER
+  - POPUP_CONTAINER_SHADE_0
+  m_RenderDataMap: {}
+  m_Tag: LevelPage
+  m_IsVariant: 0
