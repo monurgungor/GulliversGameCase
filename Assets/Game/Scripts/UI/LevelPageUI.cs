@@ -20,8 +20,35 @@ public class LevelPageUI : MonoBehaviour
 
     private readonly List<LevelSlotUI> slots = new List<LevelSlotUI>();
 
+    private void OnEnable()
+    {
+        LevelController.LevelsChanged += Rebuild;
+    }
+
+    private void OnDisable()
+    {
+        LevelController.LevelsChanged -= Rebuild;
+    }
+
     private void Start()
     {
+        // The save may already be loaded, in which case no event is coming.
+        Rebuild();
+    }
+
+    /// <summary>Redraws every row. Safe to call again whenever progress changes.</summary>
+    private void Rebuild()
+    {
+        foreach (LevelSlotUI slot in slots)
+        {
+            if (slot != null)
+            {
+                Destroy(slot.gameObject);
+            }
+        }
+
+        slots.Clear();
+
         foreach (LevelData level in levelController.Levels)
         {
             LevelSlotUI slot = Instantiate(levelSlotPrefab, levelSlotContainer);

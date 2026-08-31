@@ -21,6 +21,13 @@ public class LevelController : MonoBehaviour
     /// <summary>Raised by the menu when the player picks a level.</summary>
     public static event Action<int> LevelRequested;
 
+    /// <summary>
+    /// Raised whenever the level list is rebuilt. The menu is loaded before the
+    /// save file has finished reading when the gameplay scene is entered
+    /// directly, so the list it draws has to be able to arrive late.
+    /// </summary>
+    public static event Action LevelsChanged;
+
     public static void RequestLevel(int levelId) => LevelRequested?.Invoke(levelId);
 
     private void OnEnable()
@@ -120,5 +127,7 @@ public class LevelController : MonoBehaviour
             levels[info.Id] = level;
             orderedLevels.Add(level);
         }
+
+        LevelsChanged?.Invoke();
     }
 }

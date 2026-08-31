@@ -24,7 +24,15 @@ public class SceneController : MonoBehaviour
         Application.targetFrameRate = 60;
 
         await saveManager.LoadAsync();
-        await LoadMainMenuAsync();
+
+        // Pressing play on a content scene rather than on Bootstrap is the
+        // normal way to work in the editor, so only pull the menu in when the
+        // game really did start from the bootstrap scene.
+        if (SceneManager.GetActiveScene().name != mainMenuSceneName &&
+            SceneManager.GetActiveScene().name != gameSceneName)
+        {
+            await LoadMainMenuAsync();
+        }
     }
 
     public Task LoadMainMenuAsync() => LoadSceneAsync(mainMenuSceneName);
