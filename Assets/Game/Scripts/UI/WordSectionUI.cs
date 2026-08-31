@@ -1,181 +1,156 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+using PrimeTween;
 using TMPro;
+using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
-using PrimeTween;
 
+/// <summary>
+/// The panel beside the board: the level title, the running score, the value of
+/// the letters in the slots, and the list of words already played.
+/// </summary>
 public class WordSectionUI : MonoBehaviour
 {
-    [SerializeField] private Button undoButton;
+    [Header("Buttons")]
     [SerializeField] private Button submitButton;
-
     [SerializeField] private Button returnToMenuButton;
-    [SerializeField] private TextMeshProUGUI currentScoreText;
-    [SerializeField] private TextMeshProUGUI totalScoreText;
 
+    [Header("Labels")]
     [SerializeField] private TextMeshProUGUI levelTitleText;
+    [SerializeField] private TextMeshProUGUI totalScoreText;
+    [SerializeField] private TextMeshProUGUI currentScoreText;
+    [Tooltip("Bubble around the pending score, hidden while the letters spell nothing.")]
+    [SerializeField] private RectTransform currentScoreBubble;
 
-    [SerializeField] private ScrollRect wordSectionScrollRect;
+    [Header("Played Words")]
+    [SerializeField] private ScrollRect wordScrollRect;
     [SerializeField] private RectTransform wordContainer;
     [SerializeField] private TextMeshProUGUI wordPrefab;
 
+    [Header("Panels")]
     [SerializeField] private RectTransform buttonsPanel;
     [SerializeField] private RectTransform wordSectionPanel;
-    
-    [Header("UI Settings")]
-    [SerializeField] private string currentScorePrefix = "pts";
-    [SerializeField] private string totalScorePrefix = "Score: ";
-    
-    [Header("Animation Settings")]
-    [SerializeField] private float initialAnimationDuration = 0.8f;
-    [SerializeField] private Ease initialAnimationEase = Ease.OutCubic;
-    [SerializeField] private float scrollAnimationDuration = 0.5f;
-    [SerializeField] private Ease scrollEase = Ease.OutQuad;
 
-    private RectTransform textBox;
-    
-    private Vector2 buttonsInitialPos;
-    private Vector2 wordSectionInitialPos;
+    [Header("Text")]
+    [SerializeField] private string currentScoreSuffix = "pts";
+    [SerializeField] private string totalScorePrefix = "Score: ";
+
+    [Header("Animation")]
+    [SerializeField] private float slideInDuration = 0.8f;
+    [SerializeField] private Ease slideInEase = Ease.OutCubic;
+    [SerializeField] private float scrollDuration = 0.5f;
+    [SerializeField] private Ease scrollEase = Ease.OutQuad;
 
     [Inject] private LevelController levelController;
 
+    private Vector2 buttonsRestPosition;
+    private Vector2 wordSectionRestPosition;
+
+    // Built once: TextMeshPro only substitutes numbers, so the words around the
+    // number have to be baked into the format string to keep updates allocation free.
+    private string pendingScoreFormat;
+    private string totalScoreFormat;
+
     private void Awake()
     {
-        buttonsInitialPos = buttonsPanel.anchoredPosition;
-        wordSectionInitialPos = wordSectionPanel.anchoredPosition;
-    }
+        pendingScoreFormat = "{0}" + currentScoreSuffix;
+        totalScoreFormat = totalScorePrefix + "{0}";
 
-    private void Initialize()
-    {
-        submitButton.onClick.AddListener(OnSubmitButtonClicked);
-        returnToMenuButton.onClick.AddListener(delegate { levelController.ReturnToMainMenu(); });
+        buttonsRestPosition = buttonsPanel.anchoredPosition;
+        wordSectionRestPosition = wordSectionPanel.anchoredPosition;
 
-        textBox = currentScoreText.transform.parent.GetComponent<RectTransform>();
+        submitButton.onClick.AddListener(WordActions.RaiseSubmitRequested);
+        returnToMenuButton.onClick.AddListener(OnReturnToMenu);
 
-        UpdateCurrentScoreDisplay(0);
-        UpdateTotalScoreDisplay(0);
+        SetSubmitEnabled(false);
+        SetPendingScore(0);
+        SetTotalScore(0);
     }
 
     private void OnEnable()
-    {   
-        WordActions.OnWordValidityChanged += OnWordValidityChanged;
-        WordActions.OnWordScoreChanged += OnWordScoreChanged;
-        WordActions.OnWordSubmitted += OnWordSubmitted;
-        LevelLoader.OnLevelLoaded += OnLevelLoaded;
-    }
-
-    private void Start()
     {
-        ScoreManager.OnScoreUpdated += UpdateTotalScoreDisplay;
-        
-        Vector2 buttonsStartPos = new Vector2(buttonsInitialPos.x, -buttonsInitialPos.y);
-        Vector2 wordSectionStartPos = new Vector2(wordSectionInitialPos.x, -wordSectionInitialPos.y);
-        
-        buttonsPanel.anchoredPosition = buttonsStartPos;
-        wordSectionPanel.anchoredPosition = wordSectionStartPos;
-
-        Tween.Custom(
-            startValue: buttonsStartPos, 
-            endValue: buttonsInitialPos, 
-            duration: initialAnimationDuration, 
-            ease: initialAnimationEase,
-            onValueChange: val => buttonsPanel.anchoredPosition = val);
-            
-        Tween.Custom(
-            startValue: wordSectionStartPos,
-            endValue: wordSectionInitialPos,
-            duration: initialAnimationDuration,
-            ease: initialAnimationEase,
-            onValueChange: val => wordSectionPanel.anchoredPosition = val);
+        WordActions.WordValidityChanged += SetSubmitEnabled;
+        WordActions.WordScoreChanged += SetPendingScore;
+        WordActions.WordSubmitted += AddPlayedWord;
+        ScoreManager.ScoreChanged += SetTotalScore;
+        LevelLoader.LevelLoaded += ShowLevelTitle;
     }
 
     private void OnDisable()
     {
-        submitButton.onClick.RemoveListener(OnSubmitButtonClicked);
-        
-        WordActions.OnWordValidityChanged -= OnWordValidityChanged;
-        WordActions.OnWordScoreChanged -= OnWordScoreChanged;
-        WordActions.OnWordSubmitted -= OnWordSubmitted;
-        ScoreManager.OnScoreUpdated -= UpdateTotalScoreDisplay;
-        LevelLoader.OnLevelLoaded -= OnLevelLoaded;
+        WordActions.WordValidityChanged -= SetSubmitEnabled;
+        WordActions.WordScoreChanged -= SetPendingScore;
+        WordActions.WordSubmitted -= AddPlayedWord;
+        ScoreManager.ScoreChanged -= SetTotalScore;
+        LevelLoader.LevelLoaded -= ShowLevelTitle;
     }
 
-    private void OnSubmitButtonClicked()
+    private void Start()
     {
-        WordActions.OnWordSubmitRequested?.Invoke();
+        SlideIn(buttonsPanel, buttonsRestPosition);
+        SlideIn(wordSectionPanel, wordSectionRestPosition);
     }
 
-
-    private void OnWordValidityChanged(bool isValid)
+    private void OnDestroy()
     {
-        submitButton.interactable = isValid;
-        
-        ColorBlock colors = submitButton.colors;
-        colors.normalColor = isValid ? Color.green : Color.gray;
-        submitButton.colors = colors;
+        submitButton.onClick.RemoveListener(WordActions.RaiseSubmitRequested);
+        returnToMenuButton.onClick.RemoveListener(OnReturnToMenu);
     }
 
-    private void OnWordScoreChanged(int score)
+    private void OnReturnToMenu()
     {
-        UpdateCurrentScoreDisplay(score);
+        levelController.ReturnToMainMenu();
     }
 
-    private void UpdateCurrentScoreDisplay(int score)
+    private void ShowLevelTitle(int levelId)
     {
-        if (currentScoreText != null)
+        levelTitleText.text = levelController.GetTitle(levelId);
+    }
+
+    private void SetSubmitEnabled(bool canSubmit)
+    {
+        submitButton.interactable = canSubmit;
+    }
+
+    private void SetPendingScore(int score)
+    {
+        currentScoreBubble.gameObject.SetActive(score > 0);
+
+        if (score > 0)
         {
-            if (score > 0)
-            {
-                currentScoreText.text = $"{score}{currentScorePrefix}";
-                textBox.gameObject.SetActive(true);
-            }
-            else
-            {
-                textBox.gameObject.SetActive(false);
-            }
+            currentScoreText.SetText(pendingScoreFormat, score);
         }
     }
 
-    private void UpdateTotalScoreDisplay(int totalScore)
+    private void SetTotalScore(int total)
     {
-        if (totalScoreText != null)
-        {
-            totalScoreText.text = $"{totalScorePrefix}{totalScore}";
-        }
+        totalScoreText.SetText(totalScoreFormat, total);
     }
 
-    private void OnWordSubmitted(string word)
+    private void AddPlayedWord(string word)
     {
-        TextMeshProUGUI wordText = Instantiate(wordPrefab, wordContainer);
-        wordText.text = word;
-        
-        AnimateScrollToBottom();
-    }
-    
-    private void AnimateScrollToBottom()
-    {
-        if (wordSectionScrollRect == null) return;
-        
-        Sequence scrollSequence = Sequence.Create();
-        
-        scrollSequence.Chain(Tween.Delay(0.02f));
-        
-        scrollSequence.ChainCallback(() => {
-            LayoutRebuilder.ForceRebuildLayoutImmediate(wordContainer);
-        });
-        
-        scrollSequence.Chain(
-            Tween.Custom(wordSectionScrollRect.verticalNormalizedPosition, 0f, scrollAnimationDuration, 
-                onValueChange: value => wordSectionScrollRect.verticalNormalizedPosition = value, 
-                ease: scrollEase)
-        );
+        TextMeshProUGUI entry = Instantiate(wordPrefab, wordContainer);
+        entry.SetText(word);
+
+        LayoutRebuilder.ForceRebuildLayoutImmediate(wordContainer);
+        ScrollToBottom();
     }
 
-    private void OnLevelLoaded(int levelId)
+    private void ScrollToBottom()
     {
-        levelTitleText.text = levelController.GetLevelTitle(levelId);
-        Initialize();
+        Tween.Custom(
+            wordScrollRect.verticalNormalizedPosition,
+            0f,
+            scrollDuration,
+            onValueChange: value => wordScrollRect.verticalNormalizedPosition = value,
+            ease: scrollEase);
+    }
+
+    /// <summary>Slides a panel up from just off screen into its authored position.</summary>
+    private void SlideIn(RectTransform panel, Vector2 restPosition)
+    {
+        Vector2 start = new Vector2(restPosition.x, -restPosition.y);
+        panel.anchoredPosition = start;
+
+        Tween.UIAnchoredPosition(panel, restPosition, slideInDuration, slideInEase);
     }
 }

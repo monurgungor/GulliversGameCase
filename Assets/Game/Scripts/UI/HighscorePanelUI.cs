@@ -1,225 +1,161 @@
+using PrimeTween;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using PrimeTween;
-using System;
 using Zenject;
 
+/// <summary>
+/// The end of level panel. It plays one sequence: the "no words left" banner
+/// when the board died, then the dim, the star, the score, and the way back to
+/// the menu.
+/// </summary>
 public class HighscorePanelUI : MonoBehaviour
 {
-    [Header("UI Elements")]
+    [Header("Panel")]
     [SerializeField] private Canvas highscoreCanvas;
-    [SerializeField] private Image canvasBackground;
+    [SerializeField] private Image dimBackground;
+
+    [Header("Elements")]
     [SerializeField] private TextMeshProUGUI highscoreText;
     [SerializeField] private TextMeshProUGUI noWordsLeftText;
-    [SerializeField] private RectTransform[] highscoreStars;
     [SerializeField] private RectTransform starImage;
     [SerializeField] private RectTransform shineImage;
     [SerializeField] private RectTransform mainMenuButton;
+    [Tooltip("Extra stars that only appear when the player beat their record.")]
+    [SerializeField] private RectTransform[] highscoreStars;
 
-    [Header("Animation Settings")]
-    [SerializeField] private float animationDuration = 0.8f;
-    [SerializeField] private float delayBetweenAnimations = 0.3f;
-    [SerializeField] private float backgroundFadeAlpha = 0.7f;
-    [SerializeField] private float noWordsShakeAmount = 30f;
-    [SerializeField] private float shineRotationSpeed = 360f;
-    [SerializeField] private float punchScale = 1.2f;
+    [Header("Animation")]
+    [SerializeField] private float stepDuration = 0.8f;
+    [SerializeField] private float pauseBetweenSteps = 0.3f;
+    [SerializeField] private float dimAlpha = 0.7f;
+    [SerializeField] private float bannerShakeDistance = 30f;
+    [SerializeField] private float shineSpinDuration = 2f;
+    [SerializeField] private float newRecordPunch = 1.2f;
 
-    [Inject]private GameStateManager gameStateManager;
-    private GameEndData currentGameEndData;
+    [Inject] private GameStateManager gameStateManager;
 
+    private void Awake()
+    {
+        highscoreCanvas.enabled = false;
+        mainMenuButton.GetComponent<Button>().onClick.AddListener(gameStateManager.ReturnToMainMenu);
+    }
 
     private void OnEnable()
     {
-        GameStateManager.OnGameEndProcessed += OnGameEndProcessed;
+        GameStateManager.GameEndProcessed += Show;
     }
 
     private void OnDisable()
     {
-        GameStateManager.OnGameEndProcessed -= OnGameEndProcessed;
+        GameStateManager.GameEndProcessed -= Show;
     }
 
-    private void OnGameEndProcessed(GameEndData gameEndData)
+    private void Show(GameEndData result)
     {
-        currentGameEndData = gameEndData;
-        StartGameEndSequence();
-    }
-
-    private void StartGameEndSequence()
-    {
-        SetInitialStates();
-        
+        HideEverything();
         highscoreCanvas.enabled = true;
 
-        CreateGameEndAnimationSequence();
+        Sequence panel = Sequence.Create();
+
+        if (result.Reason == GameEndReason.NoWordsLeft)
+        {
+            panel.Chain(NoWordsLeftBanner());
+        }
+
+        panel.Chain(Tween.Color(dimBackground, WithAlpha(dimBackground.color, dimAlpha), stepDuration, Ease.OutQuad));
+        panel.ChainDelay(pauseBetweenSteps);
+
+        panel.Chain(result.IsNewHighScore ? NewRecordStars() : Sequence.Create(Grow(starImage, stepDuration)));
+
+        panel.Chain(Grow(shineImage, stepDuration));
+        panel.ChainCallback(SpinShineForever);
+
+        panel.Chain(ScoreText(result));
+        panel.ChainDelay(pauseBetweenSteps);
+
+        panel.Chain(Tween.UIAnchoredPosition(mainMenuButton, Vector2.zero, stepDuration, Ease.OutBack));
     }
 
-    private void SetInitialStates()
+    /// <summary>Puts everything off screen or at zero scale before the sequence runs.</summary>
+    private void HideEverything()
     {
-        canvasBackground.color = new Color(canvasBackground.color.r, canvasBackground.color.g, canvasBackground.color.b, 0f);
-
-        noWordsLeftText.rectTransform.anchoredPosition = new Vector2(Screen.width * 1.5f, noWordsLeftText.rectTransform.anchoredPosition.y);
+        dimBackground.color = WithAlpha(dimBackground.color, 0f);
 
         starImage.localScale = Vector3.zero;
         shineImage.localScale = Vector3.zero;
 
-        highscoreText.rectTransform.anchoredPosition = new Vector2(Screen.width * 1.5f, highscoreText.rectTransform.anchoredPosition.y);
-        mainMenuButton.anchoredPosition = new Vector2(Screen.width * 1.5f, mainMenuButton.anchoredPosition.y);
-
-        if (highscoreStars != null)
+        foreach (RectTransform star in highscoreStars)
         {
-            foreach (var star in highscoreStars)
-            {
-                if (star != null)
-                    star.localScale = Vector3.zero;
-            }
-        }
-        
-        mainMenuButton.GetComponent<Button>().onClick.AddListener(OnMainMenuButtonClicked);
-    }
-
-    private void CreateGameEndAnimationSequence()
-    {
-        Sequence mainSequence = Sequence.Create();
-
-        if (currentGameEndData.isDeadlockEnd)
-        {
-            mainSequence.Group(CreateNoWordsLeftSequence());
+            star.localScale = Vector3.zero;
         }
 
-        mainSequence.Chain(CreateBackgroundAnimation());
-    
+        ParkOffScreen(noWordsLeftText.rectTransform);
+        ParkOffScreen(highscoreText.rectTransform);
+        ParkOffScreen(mainMenuButton);
+    }
 
-        if (currentGameEndData.isNewHighScore)
+    private static void ParkOffScreen(RectTransform target)
+    {
+        target.anchoredPosition = new Vector2(Screen.width * 1.5f, target.anchoredPosition.y);
+    }
+
+    /// <summary>Slides the banner in, shakes it, then throws it off the other side.</summary>
+    private Sequence NoWordsLeftBanner()
+    {
+        RectTransform banner = noWordsLeftText.rectTransform;
+
+        return Sequence.Create(Tween.UIAnchoredPosition(banner, Vector2.zero, stepDuration, Ease.OutBack))
+            .Chain(Tween.ShakeLocalPosition(banner, Vector3.right * bannerShakeDistance, 0.4f))
+            .Chain(Tween.UIAnchoredPosition(banner, new Vector2(-Screen.width * 1.5f, 0f), stepDuration, Ease.InBack))
+            .ChainDelay(pauseBetweenSteps);
+    }
+
+    private Sequence NewRecordStars()
+    {
+        Sequence stars = Sequence.Create(Grow(starImage, stepDuration));
+
+        foreach (RectTransform star in highscoreStars)
         {
-            mainSequence.Chain(CreateNewHighScoreStarsSequence());
+            stars.Chain(Grow(star, stepDuration * 0.5f));
         }
-        else
+
+        return stars;
+    }
+
+    private Sequence ScoreText(GameEndData result)
+    {
+        RectTransform text = highscoreText.rectTransform;
+
+        Sequence sequence = Sequence.Create(Tween.UIAnchoredPosition(text, Vector2.zero, stepDuration, Ease.OutBack));
+
+        sequence.ChainCallback(() =>
         {
-            mainSequence.Chain(CreateStarImageAnimation());
-        }
-        
-        mainSequence.Chain(CreateShineImageAnimation());
-        mainSequence.Chain(CreateHighscoreTextAnimation());
-        mainSequence.Chain(CreateMainMenuButtonAnimation());
-    }
-
-    private Sequence CreateNoWordsLeftSequence()
-    {
-        Vector2 targetPos = Vector2.zero;
-        Vector2 exitPos = new Vector2(-Screen.width * 1.5f, targetPos.y);
-        Vector2 shakePos1 = targetPos + Vector2.right * noWordsShakeAmount;
-        Vector2 shakePos2 = targetPos - Vector2.right * noWordsShakeAmount;
-
-        Sequence noWordsSequence = Sequence.Create();
-        
-        noWordsSequence.Chain(Tween.UIAnchoredPosition(noWordsLeftText.rectTransform, targetPos, animationDuration, Ease.OutBack));
-        
-        Sequence shakeSequence = Sequence.Create();
-        shakeSequence.Chain(Tween.UIAnchoredPosition(noWordsLeftText.rectTransform, shakePos1, 0.1f, Ease.InOutSine));
-        shakeSequence.Chain(Tween.UIAnchoredPosition(noWordsLeftText.rectTransform, shakePos2, 0.1f, Ease.InOutSine));
-        shakeSequence.Chain(Tween.UIAnchoredPosition(noWordsLeftText.rectTransform, shakePos1, 0.1f, Ease.InOutSine));
-        shakeSequence.Chain(Tween.UIAnchoredPosition(noWordsLeftText.rectTransform, targetPos, 0.1f, Ease.InOutSine));
-        
-        noWordsSequence.Chain(shakeSequence);
-        noWordsSequence.Chain(Tween.UIAnchoredPosition(noWordsLeftText.rectTransform, exitPos, animationDuration, Ease.InBack));
-        noWordsSequence.ChainDelay(delayBetweenAnimations);
-
-        return noWordsSequence;
-    }
-
-    private Tween CreateBackgroundAnimation()
-    {
-        Color targetColor = new Color(canvasBackground.color.r, canvasBackground.color.g, canvasBackground.color.b, backgroundFadeAlpha);
-        return Tween.Color(canvasBackground, targetColor, animationDuration, Ease.OutQuad)
-            .OnComplete(() => Tween.Delay(delayBetweenAnimations));
-    }
-
-    private Tween CreateStarImageAnimation()
-    {
-        return Tween.Scale(starImage, Vector3.one, animationDuration, Ease.OutBack)
-            .OnComplete(() => Tween.Delay(delayBetweenAnimations));
-    }
-
-    private Tween CreateShineImageAnimation()
-    {
-        return Tween.Scale(shineImage, Vector3.one, animationDuration, Ease.OutBack)
-            .OnComplete(() => 
-            {
-                StartShineRotation();
-                Tween.Delay(delayBetweenAnimations);
-            });
-    }
-
-    private void StartShineRotation()
-    {
-        float rotationDuration = 2f;
-        Vector3 currentRotation = shineImage.transform.eulerAngles;
-        Vector3 targetRotation = new Vector3(currentRotation.x, currentRotation.y, currentRotation.z + 360f);
-        
-        Tween.Rotation(shineImage, Quaternion.Euler(targetRotation), rotationDuration, Ease.Linear)
-            .OnComplete(() => StartShineRotation());
-    }
-
-    private Sequence CreateNewHighScoreStarsSequence()
-    {
-        if (highscoreStars == null) return Sequence.Create();
-
-        Sequence starsSequence = Sequence.Create();
-
-        for (int i = 0; i < highscoreStars.Length; i++)
-        {
-            if (highscoreStars[i] != null)
-            {
-                starsSequence.Chain(Tween.Scale(highscoreStars[i], Vector3.one, animationDuration * 0.5f, Ease.OutBack));
-                starsSequence.ChainDelay(0.1f);
-            }
-        }
-        
-        starsSequence.ChainDelay(delayBetweenAnimations);
-        return starsSequence;
-    }
-
-    private Sequence CreateHighscoreTextAnimation()
-    {
-        Vector2 targetPos = Vector2.zero;
-        
-        Sequence textSequence = Sequence.Create();
-        textSequence.Chain(Tween.UIAnchoredPosition(highscoreText.rectTransform, targetPos, animationDuration, Ease.OutBack));
-        
-        textSequence.ChainCallback(() =>
-        {
-            if (currentGameEndData.isNewHighScore)
-            {
-                highscoreText.text = $"NEW HIGH SCORE\n{currentGameEndData.currentScore}";
-            }
-            else
-            {
-                highscoreText.text = $"SCORE:{currentGameEndData.currentScore}\nHIGHSCORE:{currentGameEndData.previousHighScore}";
-            }
+            highscoreText.text = result.IsNewHighScore
+                ? $"NEW HIGH SCORE\n{result.Score}"
+                : $"SCORE: {result.Score}\nHIGH SCORE: {result.PreviousHighScore}";
         });
-        
-        if (currentGameEndData.isNewHighScore)
+
+        if (result.IsNewHighScore)
         {
-            textSequence.Chain(Tween.Scale(highscoreText.rectTransform, Vector3.one * punchScale, 0.2f, Ease.OutQuad));
-            textSequence.Chain(Tween.Scale(highscoreText.rectTransform, Vector3.one, 0.2f, Ease.OutQuad));
+            sequence.Chain(Tween.PunchScale(text, Vector3.one * (newRecordPunch - 1f), 0.4f));
         }
-        
-        textSequence.ChainDelay(delayBetweenAnimations);
-        return textSequence;
+
+        return sequence;
     }
 
-    private Tween CreateMainMenuButtonAnimation()
+    private void SpinShineForever()
     {
-        Vector2 targetPos = Vector2.zero;
-        return Tween.UIAnchoredPosition(mainMenuButton, targetPos, animationDuration, Ease.OutBack);
+        Tween.LocalEulerAngles(shineImage, Vector3.zero, new Vector3(0f, 0f, 360f),
+            shineSpinDuration, Ease.Linear, cycles: -1);
     }
 
-    public void OnMainMenuButtonClicked()
+    private static Tween Grow(RectTransform target, float duration)
     {
-        if (gameStateManager != null)
-        {
-            gameStateManager.ReturnToMainMenu();
-        }
+        return Tween.Scale(target, Vector3.one, duration, Ease.OutBack);
+    }
+
+    private static Color WithAlpha(Color color, float alpha)
+    {
+        return new Color(color.r, color.g, color.b, alpha);
     }
 }

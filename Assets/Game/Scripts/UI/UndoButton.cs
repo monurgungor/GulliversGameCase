@@ -1,79 +1,55 @@
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
+
+/// <summary>
+/// Tap to take back the last letter, hold to take back the whole word.
+/// </summary>
+[RequireComponent(typeof(Button))]
 public class UndoButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 {
-    [Header("Undo Settings")]
+    [Tooltip("Holding at least this long returns every letter instead of one.")]
     [SerializeField] private float holdThreshold = 0.5f;
-    [SerializeField] private Button undoButton;
 
-    private float pointerDownTime;
-    private bool isPointerDown;
-    
-    
+    private Button button;
+    private float pressedAt;
+    private bool isPressed;
+
     private void Awake()
     {
-        if (undoButton == null)
-            undoButton = GetComponent<Button>();
-            
+        button = GetComponent<Button>();
     }
-    
+
     private void OnEnable()
     {
-        WordActions.OnUndoAvailabilityChanged += OnUndoAvailabilityChanged;
-        
-        UpdateButtonState(false);
+        WordActions.UndoAvailabilityChanged += SetAvailable;
+        SetAvailable(false);
     }
-    
+
     private void OnDisable()
     {
-        WordActions.OnUndoAvailabilityChanged -= OnUndoAvailabilityChanged;
-        
+        WordActions.UndoAvailabilityChanged -= SetAvailable;
     }
-    
-    
+
     public void OnPointerDown(PointerEventData eventData)
     {
-         isPointerDown = true;
-        pointerDownTime = Time.time;
+        isPressed = true;
+        pressedAt = Time.unscaledTime;
     }
-    
+
     public void OnPointerUp(PointerEventData eventData)
     {
-        if (!isPointerDown) return;
-        float heldTime = Time.time - pointerDownTime;
-        isPointerDown = false;
+        if (!isPressed)
+        {
+            return;
+        }
 
-        if (heldTime >= holdThreshold)
-        {
-            WordActions.OnWordUndoWithType?.Invoke(true);
-        }
-        else
-        {
-            WordActions.OnWordUndoWithType?.Invoke(false);
-        }
+        isPressed = false;
+        WordActions.RaiseUndoRequested(Time.unscaledTime - pressedAt >= holdThreshold);
     }
-    
-    
-    /// <summary>
-    /// Handle undo availability changes
-    /// </summary>
-    /// <param name="canUndo">Whether undo is available</param>
-    private void OnUndoAvailabilityChanged(bool canUndo)
+
+    private void SetAvailable(bool canUndo)
     {
-        UpdateButtonState(canUndo);
+        button.interactable = canUndo;
     }
-    
-    /// <summary>
-    /// Update button interactable state and visual appearance
-    /// </summary>
-    /// <param name="canUndo">Whether undo is available</param>
-    private void UpdateButtonState(bool canUndo)
-    {
-        if (undoButton != null)
-        {
-            undoButton.interactable = canUndo;
-        }
-    }
-    
 }

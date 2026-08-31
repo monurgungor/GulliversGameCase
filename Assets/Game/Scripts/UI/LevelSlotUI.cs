@@ -1,143 +1,73 @@
-using System.Collections;
-using System.Collections.Generic;
+using PrimeTween;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using PrimeTween;
 
+/// <summary>One row in the level list.</summary>
 public class LevelSlotUI : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI levelNameText;
     [SerializeField] private TextMeshProUGUI highScoreText;
-
     [SerializeField] private TextMeshProUGUI playButtonText;
     [SerializeField] private Button playButton;
     [SerializeField] private Image lockImage;
 
-    [Header("Animation Settings")]
+    [Header("Unlock Animation")]
     [SerializeField] private float lockShrinkDuration = 0.5f;
     [SerializeField] private float buttonUnlockDelay = 1.5f;
 
+    private int levelId;
 
-    public void Initialize(LevelData levelData)
+    public void Initialize(LevelData level)
     {
-        levelNameText.text = $"Level {levelData.levelId} - {levelData.levelTitle}";
+        levelId = level.levelId;
 
+        levelNameText.text = $"Level {level.levelId} - {level.levelTitle}";
 
-        if (highScoreText != null)
+        highScoreText.gameObject.SetActive(level.highScore > 0);
+        if (level.highScore > 0)
         {
-            if (levelData.highScore > 0)
-            {
-                highScoreText.text = $"High Score: {levelData.highScore}";
-                highScoreText.gameObject.SetActive(true);
-            }
-            else
-            {
-                highScoreText.gameObject.SetActive(false);
-            }
+            highScoreText.SetText("High Score: {0}", level.highScore);
         }
 
-        if (lockImage != null)
-        {
-            lockImage.gameObject.SetActive(!levelData.isUnlocked);
-        }
+        playButton.onClick.AddListener(OnPlayClicked);
 
-        if (playButton != null)
-        {
-            playButton.onClick.RemoveAllListeners();
-            playButton.onClick.AddListener(() => OnPlayButtonClicked(levelData.levelId));
-            playButton.interactable = levelData.isUnlocked;
-            playButtonText.text = levelData.isUnlocked ? "Play" : "";
-        }
-
-        if(PlayerPrefs.GetInt("UnlockedLevel") == levelData.levelId)
-        {
-            LockButton();
-        }
+        // A level that is about to play its unlock animation starts locked, even
+        // though the save file already counts it as unlocked.
+        bool playable = level.isUnlocked && LevelProgress.PeekJustUnlocked() != level.levelId;
+        SetLocked(!playable);
     }
 
-    /// <summary>
-    /// Called when play button is clicked
-    /// </summary>
-    /// <param name="levelId">Level name to load</param>
-    private void OnPlayButtonClicked(int levelId)
+    private void OnDestroy()
     {
-        Debug.Log($"LevelSlot_UI: Play button clicked for level: {levelId}");
-
-        LevelController.OnLevelRequested?.Invoke(levelId);
+        playButton.onClick.RemoveListener(OnPlayClicked);
     }
 
-    /// <summary>
-    /// Update level slot data
-    /// </summary>
-    /// <param name="highScore">New high score</param>
-    /// <param name="isUnlocked">New unlock status</param>
-    public void UpdateData(LevelData levelData)
+    private void OnPlayClicked()
     {
-
-        if (highScoreText != null)
-        {
-            if (levelData.highScore > 0)
-            {
-                highScoreText.text = $"High Score: {levelData.highScore}";
-                highScoreText.gameObject.SetActive(true);
-            }
-            else
-            {
-                highScoreText.gameObject.SetActive(false);
-            }
-        }
-
-        if (lockImage != null)
-        {
-            lockImage.gameObject.SetActive(!levelData.isUnlocked);
-            playButton.interactable = levelData.isUnlocked;
-            playButtonText.text = levelData.isUnlocked ? "Play" : "";
-        }
-
+        LevelController.RequestLevel(levelId);
     }
 
-    /// <summary>
-    /// Play unlock animation sequence
-    /// </summary>
+    /// <summary>Shrinks the padlock away and then hands the button to the player.</summary>
     public void PlayUnlockAnimation()
     {
-        if (lockImage == null || playButton == null) return;
+        Vector3 lockScale = lockImage.transform.localScale;
 
-        LockButton();
-
-        Vector3 originalScale = lockImage.transform.localScale;
-        Tween.Scale(lockImage.transform, Vector3.zero, lockShrinkDuration, Ease.InBack)
-            .OnComplete(() =>
+        Sequence.Create(Tween.Scale(lockImage.transform, Vector3.zero, lockShrinkDuration, Ease.InBack))
+            .ChainCallback(() =>
             {
                 lockImage.gameObject.SetActive(false);
-
-                Tween.Delay(buttonUnlockDelay).OnComplete(() =>
-                {
-                    UnlockButton();
-                    lockImage.transform.localScale = originalScale;
-                });
-            });
+                lockImage.transform.localScale = lockScale;
+            })
+            .ChainDelay(buttonUnlockDelay)
+            .ChainCallback(() => SetLocked(false))
+            .Chain(Tween.PunchScale(playButton.transform, Vector3.one * 0.2f, 0.3f));
     }
 
-
-
-    /// <summary>
-    /// Unlock button and show play text
-    /// </summary>
-    private void UnlockButton()
+    private void SetLocked(bool locked)
     {
-        playButton.interactable = true;
-        playButtonText.text = "Play";
-
-        Tween.PunchScale(playButton.transform, Vector3.one * 0.2f, 0.3f);
-    }
-
-
-    private void LockButton()
-    {
-        playButton.interactable = false;
-        playButtonText.text = "";
-        lockImage.gameObject.SetActive(true);
+        lockImage.gameObject.SetActive(locked);
+        playButton.interactable = !locked;
+        playButtonText.SetText(locked ? string.Empty : "Play");
     }
 }

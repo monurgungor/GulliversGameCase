@@ -1,92 +1,53 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "LetterSettings", menuName = "Settings/LetterSettings")]
+/// <summary>
+/// What each letter is worth. Letters are grouped by score the way a word game
+/// board is printed, and flattened into a lookup the first time it is needed.
+/// </summary>
+[CreateAssetMenu(fileName = "LetterSettings", menuName = "Word Game/Letter Settings")]
 public class LetterSettings : ScriptableObject
 {
-    [Header("Letter Score Categories")]
     [SerializeField] private LetterScoreCategory[] letterCategories;
-    
-    private Dictionary<char, int> letterScoreLookup;
-    
+
+    private Dictionary<char, int> scoreByLetter;
+
     [System.Serializable]
     public class LetterScoreCategory
     {
         [SerializeField] private string letters;
         [SerializeField] private int score;
-        
+
         public string Letters => letters;
         public int Score => score;
     }
-    
+
+    public int GetLetterScore(char letter)
+    {
+        if (scoreByLetter == null)
+        {
+            BuildLookup();
+        }
+
+        int score;
+        return scoreByLetter.TryGetValue(letter, out score) ? score : 0;
+    }
+
     private void OnEnable()
     {
-        InitializeLookup();
+        scoreByLetter = null;
     }
-    
-    /// <summary>
-    /// Initialize the fast lookup dictionary
-    /// </summary>
-    private void InitializeLookup()
+
+    private void BuildLookup()
     {
-        letterScoreLookup = new Dictionary<char, int>();
-        
-        foreach (var category in letterCategories)
+        scoreByLetter = new Dictionary<char, int>();
+
+        foreach (LetterScoreCategory category in letterCategories)
         {
             foreach (char letter in category.Letters)
             {
-                if (!letterScoreLookup.ContainsKey(letter))
-                {
-                    letterScoreLookup[letter] = category.Score;
-                }
+                scoreByLetter[letter] = category.Score;
             }
         }
     }
-    
-    /// <summary>
-    /// Get score for a letter (O(1) lookup)
-    /// </summary>
-    /// <param name="letter">The letter to get score for</param>
-    /// <returns>Score for the letter, or 0 if not found</returns>
-    public int GetLetterScore(char letter)
-    {
-        if (letterScoreLookup == null)
-        {
-            InitializeLookup();
-        }
-        
-        return letterScoreLookup.TryGetValue(letter, out int score) ? score : 0;
-    }
-    
-    /// <summary>
-    /// Check if a letter exists in the score system
-    /// </summary>
-    /// <param name="letter">The letter to check</param>
-    /// <returns>True if letter has a score, false otherwise</returns>
-    public bool HasLetterScore(char letter)
-    {
-        if (letterScoreLookup == null)
-        {
-            InitializeLookup();
-        }
-        
-        return letterScoreLookup.ContainsKey(letter);
-    }
-    
-    /// <summary>
-    /// Get all letters and their scores (for debugging)
-    /// </summary>
-    /// <returns>Dictionary of all letters and scores</returns>
-    public Dictionary<char, int> GetAllLetterScores()
-    {
-        if (letterScoreLookup == null)
-        {
-            InitializeLookup();
-        }
-        
-        return new Dictionary<char, int>(letterScoreLookup);
-    }
-
-    
 }
