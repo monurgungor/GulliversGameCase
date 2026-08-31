@@ -1,10 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
-using Sirenix.OdinInspector;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "LetterSettings", menuName = "Settings/LetterSettings")]
-public class LetterSettings : SerializedScriptableObject
+public class LetterSettings : ScriptableObject
 {
     [Header("Letter Score Categories")]
     [SerializeField] private LetterScoreCategory[] letterCategories;

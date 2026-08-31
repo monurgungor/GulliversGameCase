@@ -1,13 +1,11 @@
 using System;
 using System.Collections.Generic;
-using Sirenix.Serialization;
 using UnityEngine;
 
 [Serializable]
 public class PlayerData
 {
  
-    [OdinSerialize]
     public PlayerLevelDataDictionary levelData = new PlayerLevelDataDictionary();
 
     /// <summary>
