@@ -1,37 +1,34 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-[System.Serializable]
+/// <summary>A level plus the player's progress on it, as the menu shows it.</summary>
 public class LevelData
 {
-    public int levelId;
-    public string levelTitle;
+    public readonly int levelId;
+    public readonly string levelTitle;
+
     public int highScore;
     public bool isUnlocked;
 
-    public LevelData(int levelId, string levelTitle, int highScore = 0, bool isUnlocked = false)
+    public LevelData(int levelId, string levelTitle, int highScore, bool isUnlocked)
     {
         this.levelId = levelId;
         this.levelTitle = levelTitle;
         this.highScore = highScore;
         this.isUnlocked = isUnlocked;
-
     }
-
 }
 
-[System.Serializable]
+/// <summary>The saved half of a level's progress.</summary>
 public class PlayerLevelData
 {
     public int highScore;
     public bool isUnlocked;
 
-    public PlayerLevelData(int highScore = 0, bool isUnlocked = false)
+    public PlayerLevelData()
+    {
+    }
+
+    public PlayerLevelData(int highScore, bool isUnlocked)
     {
         this.highScore = highScore;
         this.isUnlocked = isUnlocked;
-
     }
-    
 }

@@ -1,130 +1,69 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using System.IO;
-using Newtonsoft.Json;
-using System.Threading.Tasks;
-using Zenject;
 using System;
+using Newtonsoft.Json;
+using UnityEngine;
+using Zenject;
 
-[System.Serializable]
+/// <summary>Shape of a level file on disk.</summary>
+[Serializable]
 public class LevelJsonData
 {
     public string title;
     public TileData[] tiles;
 }
 
-
+/// <summary>
+/// Reads the level the player picked and hands its tiles to TilePlacer.
+/// Levels load through Resources rather than the file system, which is the only
+/// form that also works inside a player build.
+/// </summary>
 public class LevelLoader : MonoBehaviour
 {
-    private TilePlacer tilePlacer;
-    private int currentLevelId;
+    [SerializeField] private TilePlacer tilePlacer;
 
-    [Inject] LetterSettings letterSettings;
-    
-    
-    public static Action<int> OnLevelLoaded;
+    [Inject] private LetterSettings letterSettings;
+
+    public static event Action<int> LevelLoaded;
 
     private void Start()
     {
-        tilePlacer = FindObjectOfType<TilePlacer>();
-        
-        int levelToLoad = PlayerPrefs.GetInt("LevelToLoad");
-        if (levelToLoad != 0)
-        {
-            LoadLevelAsync(levelToLoad);
-            PlayerPrefs.DeleteKey("LevelToLoad");
-        }
-        else
-        {
-            LoadLevelAsync(1);
-        }
+        LoadLevel(LevelProgress.ConsumeRequestedLevel());
     }
 
-    /// <summary>
-    /// Load level asynchronously
-    /// </summary>
-    /// <param name="levelName">Level name to load</param>
-    public async void LoadLevelAsync(int levelId)
-    {
-        currentLevelId = levelId;
-        
-        string jsonContent = await LoadJsonFileAsync(levelId);
-            
-            LevelJsonData levelData = JsonConvert.DeserializeObject<LevelJsonData>(jsonContent);
-            
-            TileData[] tileDataArray = ConvertToTileDataArray(levelData.tiles);
-            
-            if (tilePlacer != null)
-            {
-                tilePlacer.LoadSpawnAndPlaceTiles(tileDataArray);
-            }
-            
-            OnLevelLoaded?.Invoke(levelId);
-    }
-
-    /// <summary>
-    /// Load level synchronously (legacy method)
-    /// </summary>
-    /// <param name="levelName">Level name to load</param>
     public void LoadLevel(int levelId)
     {
-        LoadLevelAsync(levelId);
-    }
-    
-    /// <summary>
-    /// Load JSON file asynchronously
-    /// </summary>
-    /// <param name="levelName">Level name to load</param>
-    /// <returns>JSON content as string</returns>
-    private async Task<string> LoadJsonFileAsync(int levelId)
-    {
-        string jsonPath = Path.Combine(Application.dataPath, "Resources", "levels", $"level_{levelId}.json");
-        
-        if (!File.Exists(jsonPath))
+        LevelJsonData levelData = LevelCatalog.LoadLevel(levelId);
+
+        if (levelData == null || levelData.tiles == null)
         {
-            throw new System.IO.FileNotFoundException($"Level file not found: {jsonPath}");
+            Debug.LogError($"LevelLoader: level {levelId} could not be read.");
+            return;
         }
-        
-        return await Task.Run(() => File.ReadAllText(jsonPath));
+
+        tilePlacer.PlaceTiles(ToTiles(levelData.tiles));
+        LevelLoaded?.Invoke(levelId);
     }
 
-
     /// <summary>
-    /// Convert tile data array synchronously (legacy method)
+    /// Level files store board coordinates and letters. Scores come from
+    /// LetterSettings so the two never disagree, and positions are scaled to
+    /// world units here rather than in the placer.
     /// </summary>
-    /// <param name="tiles">Original tile data</param>
-    /// <returns>Converted tile data array</returns>
-    private TileData[] ConvertToTileDataArray(TileData[] tiles)
+    private TileData[] ToTiles(TileData[] source)
     {
-        TileData[] tileDataArray = new TileData[tiles.Length];
-        
-        float scaleFactor = tilePlacer != null ? tilePlacer.GetScaleFactor() : 0.5f;
-        
-        for (int i = 0; i < tiles.Length; i++)
+        float scale = tilePlacer.PositionScale;
+        var tiles = new TileData[source.Length];
+
+        for (int i = 0; i < source.Length; i++)
         {
-            var tile = tiles[i];
-            
-            Vector3 scaledPosition = new Vector3(
-                tile.Position.x * scaleFactor, 
-                tile.Position.y * scaleFactor, 
-                tile.Position.z * scaleFactor
-            );
-            
-            char character = tile.Character;
-            
-            tileDataArray[i] = new TileData(tile.Id, character, scaledPosition, tile.Children, letterSettings.GetLetterScore(character));
+            TileData tile = source[i];
+            tiles[i] = new TileData(
+                tile.Id,
+                tile.Character,
+                tile.Position * scale,
+                tile.Children ?? Array.Empty<int>(),
+                letterSettings.GetLetterScore(tile.Character));
         }
-        
-        return tileDataArray;
+
+        return tiles;
     }
-    
-    
-    public void ReloadCurrentLevel()
-    {
-        if (currentLevelId != 0)
-        {
-            LoadLevelAsync(currentLevelId);
-        }
-    }
-} 
+}

@@ -2,98 +2,60 @@ using System;
 using UnityEngine;
 using Zenject;
 
+/// <summary>
+/// Closes out a level: records the result, saves it, and tells the end of level
+/// panel what to show. TileManager has already applied any penalty by the time
+/// this runs, so the score read here is the final one.
+/// </summary>
 public class GameStateManager : MonoBehaviour
 {
     [Inject] private LevelController levelController;
     [Inject] private ScoreManager scoreManager;
 
-    private int currentLevelId;
-    private int currentScore;
+    private int levelId;
     private int previousHighScore;
-    private bool isNewHighScore;
-    private bool isDeadlockEnd;
+    private bool levelIsOver;
 
-    public static event Action<GameEndData> OnGameEndProcessed;
+    public static event Action<GameEndData> GameEndProcessed;
 
     private void OnEnable()
     {
-        GameEvents.OnGameCompleted += OnGameCompleted;
-        GameEvents.OnDeadlockDetected += OnDeadlockDetected;
-        LevelLoader.OnLevelLoaded += OnLevelLoaded;
+        GameEvents.GameEnded += OnGameEnded;
+        LevelLoader.LevelLoaded += OnLevelLoaded;
     }
 
     private void OnDisable()
     {
-        GameEvents.OnGameCompleted -= OnGameCompleted;
-        GameEvents.OnDeadlockDetected -= OnDeadlockDetected;
-        LevelLoader.OnLevelLoaded -= OnLevelLoaded;
+        GameEvents.GameEnded -= OnGameEnded;
+        LevelLoader.LevelLoaded -= OnLevelLoaded;
     }
 
-    private void OnLevelLoaded(int levelId)
+    private void OnLevelLoaded(int loadedLevelId)
     {
-        currentLevelId = levelId;
-        ResetGameState();
-        
-        if (levelController != null && currentLevelId > 0)
+        levelId = loadedLevelId;
+        previousHighScore = levelController.GetHighScore(loadedLevelId);
+        levelIsOver = false;
+    }
+
+    private void OnGameEnded(GameEndReason reason)
+    {
+        if (levelIsOver || levelId <= 0)
         {
-            previousHighScore = levelController.GetHighScoreForLevel(currentLevelId);
-        }
-    }
-
-    private void OnDeadlockDetected(DeadlockResult result)
-    {
-        isDeadlockEnd = result.isDeadlocked;
-    }
-
-    private void OnGameCompleted()
-    {
-        ProcessGameCompletion();
-    }
-
-    private void ProcessGameCompletion()
-    {
-        if (scoreManager != null)
-        {
-            currentScore = scoreManager.CurrentScore;
+            return;
         }
 
-        if (levelController != null && currentLevelId > 0)
-        {
-            isNewHighScore = currentScore > 0 && currentScore > previousHighScore;
-            
-            if (isNewHighScore)
-            {
-                levelController.CompleteLevel(currentLevelId, currentScore);
-            }
-        }
+        levelIsOver = true;
 
-        var gameEndData = new GameEndData
-        {
-            currentScore = currentScore,
-            previousHighScore = previousHighScore,
-            isNewHighScore = isNewHighScore,
-            isDeadlockEnd = isDeadlockEnd,
-            levelName = $"level_{currentLevelId}"
-        };
+        int score = scoreManager.CurrentScore;
+        bool isNewHighScore = score > previousHighScore;
 
-        OnGameEndProcessed?.Invoke(gameEndData);
-    }
+        levelController.CompleteLevel(levelId, score);
 
-    private void ResetGameState()
-    {
-        currentScore = 0;
-        previousHighScore = 0;
-        isNewHighScore = false;
-        isDeadlockEnd = false;
+        GameEndProcessed?.Invoke(new GameEndData(score, previousHighScore, isNewHighScore, reason));
     }
 
     public void ReturnToMainMenu()
     {
-        if (levelController != null)
-        {
-            levelController.ReturnToMainMenu();
-        }
+        levelController.ReturnToMainMenu();
     }
-
-
 }

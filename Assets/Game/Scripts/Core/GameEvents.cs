@@ -1,36 +1,26 @@
 using System;
-using UnityEngine;
+
+/// <summary>Why a level finished.</summary>
+public enum GameEndReason
+{
+    /// <summary>Every tile was played into a word.</summary>
+    BoardCleared,
+
+    /// <summary>Tiles remain but no unplayed word can be built from them.</summary>
+    NoWordsLeft,
+}
 
 /// <summary>
-/// Centralized game events for decoupled communication
+/// The single place a level's end is announced. TileManager owns that decision
+/// and applies the deadlock penalty before raising it, so every listener reads
+/// the same final score.
 /// </summary>
 public static class GameEvents
 {
-    public static event Action OnGameCompleted;
-    public static event Action<DeadlockResult> OnDeadlockDetected;
-    
-    /// <summary>
-    /// Trigger game completion event
-    /// </summary>
-    public static void TriggerGameCompleted()
-    {
-        OnGameCompleted?.Invoke();
-    }
-    
-    
-    /// <summary>
-    /// Trigger deadlock detection result event
-    /// </summary>
-    public static void TriggerDeadlockDetected(DeadlockResult result)
-    {
-        OnDeadlockDetected?.Invoke(result);
-        
-        if (result.allTilesUsed || result.isDeadlocked)
-        {
-            TriggerGameCompleted();
-        }
-    }
-    
-    
+    public static event Action<GameEndReason> GameEnded;
 
+    public static void RaiseGameEnded(GameEndReason reason)
+    {
+        GameEnded?.Invoke(reason);
+    }
 }

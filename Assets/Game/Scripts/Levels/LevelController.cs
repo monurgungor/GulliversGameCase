@@ -1,286 +1,124 @@
 using System;
-using UnityEngine;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+using UnityEngine;
 using Zenject;
-using Newtonsoft.Json;
 
 /// <summary>
-/// Handles all level-related operations including loading, discovery, and management
+/// Holds what the player has done with each level and is the way the menu asks
+/// for one to be opened. Levels are keyed by id rather than by list position,
+/// so a gap in the level files cannot shift everyone's progress.
 /// </summary>
 public class LevelController : MonoBehaviour
 {
-    private const string levelsFolderPath = "levels";
-
-    public static Action<int> OnLevelRequested;
-    
-    private List<LevelData> availableLevels = new List<LevelData>();
-    private PlayerData playerData;
-        
     [Inject] private SaveManager saveManager;
     [Inject] private SceneController sceneController;
-    
+
+    private readonly Dictionary<int, LevelData> levels = new Dictionary<int, LevelData>();
+    private readonly List<LevelData> orderedLevels = new List<LevelData>();
+
+    private PlayerData playerData;
+
+    /// <summary>Raised by the menu when the player picks a level.</summary>
+    public static event Action<int> LevelRequested;
+
+    public static void RequestLevel(int levelId) => LevelRequested?.Invoke(levelId);
+
+    private void OnEnable()
+    {
+        SaveManager.DataLoaded += OnDataLoaded;
+        LevelRequested += LoadLevelScene;
+    }
+
+    private void OnDisable()
+    {
+        SaveManager.DataLoaded -= OnDataLoaded;
+        LevelRequested -= LoadLevelScene;
+    }
 
     private void Start()
     {
-        SaveManager.OnDataLoaded += OnPlayerDataLoaded;
-        OnLevelRequested += LoadGameScene;
-        
-        if (saveManager != null && saveManager.IsDataLoaded)
+        if (saveManager.IsDataLoaded)
         {
-            OnPlayerDataLoaded(saveManager.GetCurrentPlayerData());
+            OnDataLoaded(saveManager.PlayerData);
         }
     }
 
-    private void OnDestroy()
+    private void OnDataLoaded(PlayerData data)
     {
-        SaveManager.OnDataLoaded -= OnPlayerDataLoaded;
-        OnLevelRequested -= LoadGameScene;
+        playerData = data;
+        BuildLevelList();
     }
-    
-    /// <summary>
-    /// Called when player data is loaded from SaveManager
-    /// </summary>
-    /// <param name="playerData">Loaded player data</param>
-    private void OnPlayerDataLoaded(PlayerData playerData)
+
+    /// <summary>Every level in the project with the player's progress folded in.</summary>
+    public IReadOnlyList<LevelData> Levels => orderedLevels;
+
+    public int GetHighScore(int levelId)
     {
-        this.playerData = playerData;
-        
-        RefreshLevelSlots();
+        LevelData level;
+        return levels.TryGetValue(levelId, out level) ? level.highScore : 0;
     }
-    
-    /// <summary>
-    /// Load all levels from Resources folder and create LevelData list
-    /// </summary>
-    public void LoadAllLevels()
+
+    public string GetTitle(int levelId)
     {
-        availableLevels = GetAllLevelData();
-        
-        availableLevels = availableLevels.OrderBy(level => level.levelId).ToList();
-        
+        LevelData level;
+        return levels.TryGetValue(levelId, out level) ? level.levelTitle : string.Empty;
     }
 
     /// <summary>
-    /// Get all LevelData from Resources/levels folder
+    /// Records a finished level. The next level unlocks whatever the score was:
+    /// finishing is what earns it, beating your own record is a separate thing.
     /// </summary>
-    /// <returns>List of LevelData</returns>
-    private List<LevelData> GetAllLevelData()
-    {
-        List<LevelData> levelDataList = new List<LevelData>();
-        
-        try
-        {
-            TextAsset[] levelFiles = Resources.LoadAll<TextAsset>(levelsFolderPath);
-            
-            foreach (TextAsset levelFile in levelFiles)
-            {
-                string fileName = Path.GetFileNameWithoutExtension(levelFile.name);
-                
-                int levelId = 0;
-                if (fileName.StartsWith("level_"))
-                {
-                    string numberPart = fileName.Substring(6);
-                    int.TryParse(numberPart, out levelId);
-                }
-                
-                if (levelId <= 0)
-                {
-                    continue;
-                }
-                
-                string levelTitle = fileName;
-                try
-                {
-                    LevelJsonData jsonData = JsonConvert.DeserializeObject<LevelJsonData>(levelFile.text);
-                    if (!string.IsNullOrEmpty(jsonData.title))
-                    {
-                        levelTitle = jsonData.title;
-                    }
-                }
-                catch (System.Exception jsonException)
-                {
-                    Debug.LogWarning($"LevelController: Could not parse JSON for {levelFile.name}: {jsonException.Message}. Using filename as title.");
-                }
-                
-                bool isUnlocked = (levelId == 1);
-                int highScore = 0;
-                
-                if(playerData != null)
-                {
-                    isUnlocked = playerData.IsLevelUnlocked(levelId);
-                    highScore = playerData.GetLevelScore(levelId);
-                }
-
-                LevelData levelData = new LevelData(levelId, levelTitle, highScore, isUnlocked);
-                levelDataList.Add(levelData);
-            }
-            
-            levelDataList = levelDataList.OrderBy(level => level.levelId).ToList();
-        }
-        catch (System.Exception e)
-        {
-            Debug.LogError($"LevelController: Error loading levels: {e.Message}");
-        }
-        
-        return levelDataList;
-    }
-
-    
-    /// <summary>
-    /// Get high score for a specific level
-    /// </summary>
-    /// <param name="levelId">Level ID</param>
-    /// <returns>High score for the level</returns>
-    public int GetHighScoreForLevel(int levelId)
-    {
-        return GetLevelData(levelId).highScore;
-    }
-
-    public bool IsLevelUnlocked(int levelId)
-    {
-        return GetLevelData(levelId).isUnlocked;
-    }
-
-    public string GetLevelTitle(int levelId)
-    {
-        return GetLevelData(levelId).levelTitle;
-    }
-    
-
-
-    /// <summary>
-    /// Get all available LevelData
-    /// </summary>
-    /// <returns>List of available LevelData</returns>
-    public List<LevelData> GetAvailableLevels()
-    {
-        return new List<LevelData>(availableLevels);
-    }
-
-    /// <summary>
-    /// Check if a level exists
-    /// </summary>
-    /// <param name="levelId">Level ID to check</param>
-    /// <returns>True if level exists</returns>
-    public bool LevelExists(int levelId)
-    {
-        return availableLevels.Any(level => level.levelId == levelId);
-    }
-
-
-    /// <summary>
-    /// Refresh level slots (useful when new levels are added)
-    /// </summary>
-    public void RefreshLevelSlots()
-    {
-        LoadAllLevels();
-    }
-
-    /// <summary>
-    /// Complete a level and save progress
-    /// </summary>
-    /// <param name="levelId">Level ID to complete</param>
-    /// <param name="score">Score achieved</param>
     public void CompleteLevel(int levelId, int score)
     {
-        GetLevelData(levelId).isUnlocked = true;
-        if (GetLevelData(levelId).highScore < score)
-        {
-            GetLevelData(levelId).highScore = score;
-        }
-        UnlockLevel(levelId+1);
-        UpdatePlayerData();
-    }
-
-    private void UnlockLevel(int levelId)
-    {
-        if (LevelExists(levelId))
-        {
-            GetLevelData(levelId).isUnlocked = true;
-            PlayerPrefs.SetInt("UnlockedLevel", levelId);
-            PlayerPrefs.Save();
-        }
-        
-    }
-
-    private void UpdatePlayerData()
-    {
-        playerData.LoadToPlayerData(availableLevels);
-        saveManager.SavePlayerData();
-    }
-
-    private LevelData GetLevelData(int levelId)
-    {
-        return availableLevels[levelId - 1];
-    }
-    
-
-    
-    /// <summary>
-    /// Get player data
-    /// </summary>
-    /// <returns>Current player data</returns>
-    public PlayerData GetPlayerData()
-    {
-        return playerData;
-    }
-    
-    /// <summary>
-    /// Load game scene for selected level
-    /// </summary>
-    /// <param name="levelId">Level ID to load</param>
-    public async void LoadGameScene(int levelId)
-    {
-        if (sceneController == null)
-        {
-            Debug.LogError("LevelController: SceneController not found!");
-            return;
-        }
-        
-        if (!LevelExists(levelId))
+        LevelData level;
+        if (!levels.TryGetValue(levelId, out level))
         {
             return;
         }
-        
-        if (!GetLevelData(levelId).isUnlocked)
+
+        level.isUnlocked = true;
+        level.highScore = Mathf.Max(level.highScore, score);
+
+        LevelData next;
+        if (levels.TryGetValue(levelId + 1, out next) && !next.isUnlocked)
+        {
+            next.isUnlocked = true;
+            LevelProgress.MarkJustUnlocked(next.levelId);
+        }
+
+        playerData.Apply(orderedLevels);
+        saveManager.Save();
+    }
+
+    public async void LoadLevelScene(int levelId)
+    {
+        LevelData level;
+        if (!levels.TryGetValue(levelId, out level) || !level.isUnlocked)
         {
             return;
         }
-        
-        PlayerPrefs.SetInt("LevelToLoad", levelId);
-        PlayerPrefs.Save();
-        
-        try
-        {
-            await sceneController.LoadGameSceneAsync(levelId);
-        }
-        catch (System.Exception e)
-        {
-            Debug.LogError($"LevelController: Error loading game scene: {e.Message}");
-        }
+
+        LevelProgress.RequestLevel(levelId);
+        await sceneController.LoadGameSceneAsync();
     }
-    
-    /// <summary>
-    /// Return to main menu
-    /// </summary>
+
     public async void ReturnToMainMenu()
     {
-        if (sceneController == null)
+        await sceneController.LoadMainMenuAsync();
+    }
+
+    private void BuildLevelList()
+    {
+        levels.Clear();
+        orderedLevels.Clear();
+
+        foreach (LevelInfo info in LevelCatalog.Levels)
         {
-            Debug.LogError("LevelController: SceneController not found!");
-            return;
-        }
-        
-        Debug.Log("LevelController: Returning to main menu");
-        
-        try
-        {
-            await sceneController.ReturnToMainMenuAsync();
-        }
-        catch (System.Exception e)
-        {
-            Debug.LogError($"LevelController: Error returning to main menu: {e.Message}");
+            bool unlocked = info.Id == 1 || playerData.IsLevelUnlocked(info.Id);
+            var level = new LevelData(info.Id, info.Title, playerData.GetHighScore(info.Id), unlocked);
+
+            levels[info.Id] = level;
+            orderedLevels.Add(level);
         }
     }
-} 
+}
