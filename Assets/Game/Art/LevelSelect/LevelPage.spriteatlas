@@ -86,7 +86,6 @@ SpriteAtlas:
     - 529bd66af24fe77438bc0f8e377a6d9e: 21300000
     - a022ae7a4eb108745b2b06aa8d3adb55: 21300000
     - 90d0fbfb183a04349831bdbaec59d4af: 21300000
-    - 2b8168cc3f6cff44fbf14f32470571cb: 21300000
     - b0ea447f4e41df94a91a88f55c272b1a: 21300000
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
@@ -99,7 +98,6 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 529bd66af24fe77438bc0f8e377a6d9e, type: 3}
   - {fileID: 21300000, guid: a022ae7a4eb108745b2b06aa8d3adb55, type: 3}
   - {fileID: 21300000, guid: 90d0fbfb183a04349831bdbaec59d4af, type: 3}
-  - {fileID: 21300000, guid: 2b8168cc3f6cff44fbf14f32470571cb, type: 3}
   - {fileID: 21300000, guid: b0ea447f4e41df94a91a88f55c272b1a, type: 3}
   m_PackedSpriteNamesToIndex:
   - LOCK
@@ -111,7 +109,6 @@ SpriteAtlas:
   - POPUP_BASE_SHADE
   - X
   - POPUP_BASE_SHADOW
-  - LEVELCARD_HOLDER
   - POPUP_CONTAINER_SHADE
   m_RenderDataMap: {}
   m_Tag: LevelPage

@@ -1,0 +1,10 @@
+<!--
+  IL2CPP strips managed code that nothing references statically. The save file
+  and the level files are read through reflection by Newtonsoft, so the types
+  behind them have to be preserved by name or a release build deserializes into
+  empty objects while the editor keeps working.
+-->
+<linker>
+  <assembly fullname="WordGame" preserve="all" />
+  <assembly fullname="Newtonsoft.Json" preserve="all" />
+</linker>
