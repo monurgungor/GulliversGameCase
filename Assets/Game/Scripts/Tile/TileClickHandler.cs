@@ -1,118 +1,94 @@
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
+/// <summary>
+/// Turns a tap on the board into a tile. Only free tiles keep their collider
+/// enabled, so the point test can only ever return a playable tile; when a tap
+/// lands on two of them the one nearest the camera wins, which is the one drawn
+/// on top.
+/// </summary>
 public class TileClickHandler : MonoBehaviour
 {
-    [Header("Click Settings")]
+    private const int MaxOverlappingTiles = 8;
+
+    [Tooltip("Ignores taps that arrive faster than this, which filters double taps.")]
     [SerializeField] private float clickCooldown = 0.1f;
-    [SerializeField] private bool enableHapticFeedback = true;
-    
-    
+
+    private readonly List<Collider2D> hits = new List<Collider2D>(MaxOverlappingTiles);
+    private ContactFilter2D tileFilter;
+
+    private Camera boardCamera;
     private float lastClickTime;
-    private bool isPressed = false;
-    
-    private Camera mainCamera;
-    
-    public static System.Action<Tile> OnTileClicked;
-    
+
+    public static event Action<Tile> TileClicked;
+
     private void Awake()
     {
-        mainCamera = Camera.main;
+        boardCamera = Camera.main;
+        tileFilter = new ContactFilter2D { useTriggers = true };
+        tileFilter.ClearLayerMask();
     }
-    
+
     private void Update()
-    {
-        HandleTouchInput();
-    }
-    
-    private void HandleTouchInput()
     {
         if (Input.touchCount > 0)
         {
             Touch touch = Input.GetTouch(0);
-            
-            switch (touch.phase)
+            if (touch.phase == TouchPhase.Ended && !IsOverUI(touch.fingerId))
             {
-                case TouchPhase.Began:
-                    isPressed = true;
-                    break;
-                case TouchPhase.Ended:
-                case TouchPhase.Canceled:
-                    if (isPressed)
-                    {
-                        PerformRaycast(touch.position);
-                    }
-                    isPressed = false;
-                    break;
+                Pick(touch.position);
             }
+
+            return;
         }
-#if UNITY_EDITOR
-        else
+
+        if (Input.GetMouseButtonUp(0) && !IsOverUI(-1))
         {
-            if (Input.GetMouseButtonDown(0))
-            {
-                isPressed = true;
-            }
-            else if (Input.GetMouseButtonUp(0))
-            {
-                if (isPressed)
-                {
-                    PerformRaycast(Input.mousePosition);
-                }
-                isPressed = false;
-            }
+            Pick(Input.mousePosition);
         }
-#endif
     }
-    
-    private void PerformRaycast(Vector2 screenPosition)
+
+    private static bool IsOverUI(int pointerId)
     {
-        if (mainCamera == null) 
+        return EventSystem.current != null && EventSystem.current.IsPointerOverGameObject(pointerId);
+    }
+
+    private void Pick(Vector2 screenPosition)
+    {
+        if (boardCamera == null || Time.unscaledTime - lastClickTime < clickCooldown)
         {
             return;
         }
-        
-    
-        Vector3 worldPosition = mainCamera.ScreenToWorldPoint(new Vector3(screenPosition.x, screenPosition.y, 0));
-        
-        RaycastHit2D hit2D = Physics2D.Raycast(worldPosition, Vector3.forward, 200f);
-        
-        if (hit2D.collider != null)
+
+        lastClickTime = Time.unscaledTime;
+
+        Vector2 worldPosition = boardCamera.ScreenToWorldPoint(screenPosition);
+        Physics2D.OverlapPoint(worldPosition, tileFilter, hits);
+
+        Tile topmost = null;
+        float nearestDepth = float.MaxValue;
+
+        for (int i = 0; i < hits.Count; i++)
         {
-            IClickable clickable = hit2D.collider.GetComponent<IClickable>();
-            if (clickable != null)
+            Tile tile = hits[i].GetComponent<Tile>();
+            if (tile == null)
             {
-                HandleClick(clickable);
+                continue;
+            }
+
+            float depth = tile.transform.position.z;
+            if (depth < nearestDepth)
+            {
+                nearestDepth = depth;
+                topmost = tile;
             }
         }
-    }
-    
-    private void HandleClick(IClickable clickable)
-    {
-        if (Time.time - lastClickTime < clickCooldown)
-            return;
-            
-        lastClickTime = Time.time;
-        
-        if (enableHapticFeedback)
+
+        if (topmost != null)
         {
-            #if UNITY_ANDROID || UNITY_IOS
-            Handheld.Vibrate();
-            #endif
+            TileClicked?.Invoke(topmost);
         }
-        
-        clickable.OnClick();
     }
-    
-    public void SetClickable(bool clickable)
-    {
-        enabled = clickable;
-    }
-    
-    public void ResetState()
-    {
-        isPressed = false;
-        lastClickTime = 0f;
-    }
-} 
+}

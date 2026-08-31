@@ -1,56 +1,38 @@
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
-using UnityEngine;
 using System;
+using UnityEngine;
 
+/// <summary>Keeps the running score for the current level.</summary>
 public class ScoreManager : MonoBehaviour
 {
     public int CurrentScore { get; private set; }
 
-    public static Action<int> OnScoreUpdated;
+    public static event Action<int> ScoreChanged;
 
     private void OnEnable()
     {
-        WordActions.OnScoreAdded += AddScore;
-    }
-
-    private void Start()
-    {
-        OnScoreUpdated?.Invoke(CurrentScore);
+        WordActions.ScoreAdded += AddScore;
     }
 
     private void OnDisable()
     {
-        WordActions.OnScoreAdded -= AddScore;
+        WordActions.ScoreAdded -= AddScore;
     }
 
-    /// <summary>
-    /// Add score to current total
-    /// </summary>
-    /// <param name="score">Score to add</param>
-    private void AddScore(int score)
+    private void Start()
     {
-        CurrentScore += score;
-        OnScoreUpdated?.Invoke(CurrentScore);
+        ScoreChanged?.Invoke(CurrentScore);
     }
 
-    /// <summary>
-    /// Subtract score from current total
-    /// </summary>
-    /// <param name="score">Score to subtract</param>
-    public void SubtractScore(int score)
+    private void AddScore(int points)
     {
-        CurrentScore = Mathf.Max(0, CurrentScore - score);
-        OnScoreUpdated?.Invoke(CurrentScore);
+        CurrentScore += points;
+        ScoreChanged?.Invoke(CurrentScore);
     }
 
-    /// <summary>
-    /// Reset score to zero
-    /// </summary>
-    public void ResetScore()
+    /// <summary>Applies the penalty for tiles left on a dead board. Never goes below zero.</summary>
+    public void SubtractScore(int points)
     {
-        CurrentScore = 0;
-        OnScoreUpdated?.Invoke(CurrentScore);
+        CurrentScore = Mathf.Max(0, CurrentScore - points);
+        ScoreChanged?.Invoke(CurrentScore);
     }
 }

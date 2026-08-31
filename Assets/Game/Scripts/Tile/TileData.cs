@@ -1,22 +1,25 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
 using UnityEngine;
 
-public struct TileData 
+/// <summary>
+/// One tile as a level file describes it. Children are the tiles this one
+/// covers, which is what makes the board a stack rather than a grid.
+/// </summary>
+[Serializable]
+public readonly struct TileData
 {
-    public int Id{get; private set;}
-    public char Character{get; private set;}
-    public Vector3 Position{get; private set;}
-    public int[] Children{get; private set;}
-
-    public int Score {get; private set;}
+    public int Id { get; }
+    public char Character { get; }
+    public Vector3 Position { get; }
+    public int[] Children { get; }
+    public int Score { get; }
 
     public TileData(int id, char character, Vector3 position, int[] children, int score)
     {
-        this.Id = id;
-        this.Character = character;
-        this.Position = position;
-        this.Children = children;
-        this.Score = score;
+        Id = id;
+        Character = character;
+        Position = position;
+        Children = children;
+        Score = score;
     }
 }

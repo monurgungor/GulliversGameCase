@@ -1,102 +1,61 @@
-using System.Collections;
-using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
-using UnityEngine.SocialPlatforms.Impl;
 
-public class Tile : MonoBehaviour, IClickable
+/// <summary>How a tile reads on the board.</summary>
+public enum TileState
 {
-    private TileData tileData;
-    private TileState currentState;
+    /// <summary>Free to tap: letter and score are shown.</summary>
+    Clickable,
 
-    public TileState CurrentState => currentState;
+    /// <summary>Covered, but one of the tiles covering it can be tapped now.</summary>
+    Potential,
 
-    [Header("Tile Visual Component")]
+    /// <summary>Covered with nothing playable above it.</summary>
+    Blocked,
+}
+
+/// <summary>
+/// One letter on the board. It holds its data and hands presentation to
+/// <see cref="TileVisual"/>; TileManager decides what state it should be in.
+/// </summary>
+public class Tile : MonoBehaviour
+{
     [SerializeField] private TileVisual tileVisual;
+
+    private Collider2D tileCollider;
+
+    public TileData TileData { get; private set; }
+
+    private void Awake()
+    {
+        tileCollider = GetComponent<Collider2D>();
+    }
 
     public void Initialize(TileData tileData)
     {
-        this.tileData = tileData;
-        tileVisual.SetScoreText(tileData.Score);
-        tileVisual.SetLetterText(tileData.Character);
+        TileData = tileData;
+        tileVisual.SetScore(tileData.Score);
+        tileVisual.SetLetter(tileData.Character);
     }
 
-    public void ChangeSprite(Sprite newSprite)
+    public void SetState(TileState state, VisualSettings visualSettings)
     {
-        tileVisual.SetSprite(newSprite);
-    }
-
-    /// <summary>
-    /// Set tile sprite for visual state
-    /// </summary>
-    /// <param name="sprite">Sprite to set</param>
-    public void SetSprite(Sprite sprite)
-    {
-        tileVisual.SetSprite(sprite);
+        tileVisual.Apply(state, visualSettings);
     }
 
     /// <summary>
-    /// Set tile color for visual state
+    /// Only tiles that can be played keep a collider, so the tap test never has
+    /// to reason about tiles the player cannot take.
     /// </summary>
-    /// <param name="color">Color to set</param>
-    public void SetColor(Color color)
+    public void SetInteractable(bool interactable)
     {
-        tileVisual.SetColor(color);
-    }
-
-    /// <summary>
-    /// Set tile state and apply visual changes
-    /// </summary>
-    /// <param name="newState">The new state to set</param>
-    /// <param name="visualSettings">Visual settings to use</param>
-    public void SetState(TileState newState, VisualSettings visualSettings)
-    {
-        currentState = newState;
-
-        SetClickable(newState == TileState.Clickable);
-
-        tileVisual.ApplyVisualForState(newState, visualSettings);
-    }
-
-    public TileData TileData => tileData;
-
-    public void OnClick()
-    {
-        TileClickHandler.OnTileClicked?.Invoke(this);
-    }
-
-    /// <summary>
-    /// Set whether this tile can be clicked
-    /// </summary>
-    /// <param name="clickable">True if tile should be clickable</param>
-    public void SetClickable(bool clickable)
-    {
-        Collider2D collider = GetComponent<Collider2D>();
-        if (collider != null)
+        if (tileCollider != null)
         {
-            collider.enabled = clickable;
+            tileCollider.enabled = interactable;
         }
     }
 
-
-    public void MovePosition(Vector3 newPosition)
+    public void MoveTo(Vector3 position)
     {
-        transform.position = newPosition;
+        transform.position = position;
     }
-
-    public void MoveLocalPosition(Vector3 newPosition)
-    {
-        tileVisual.MoveLocalPosition(newPosition);
-    }
-
-
 }
-
-    public enum TileState
-    {
-        Clickable,
-        Potential, 
-        Blocked
-    }
-
-

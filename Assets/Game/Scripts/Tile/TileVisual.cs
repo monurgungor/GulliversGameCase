@@ -1,113 +1,72 @@
-using UnityEngine;
 using TMPro;
+using UnityEngine;
 
 /// <summary>
-/// Handles all visual operations for tiles
+/// Draws one tile. The letter and score are sprite glyphs from the tile font,
+/// and the texts are hidden while the tile is still covered.
 /// </summary>
 public class TileVisual : MonoBehaviour
 {
     [SerializeField] private TextMeshPro scoreText;
     [SerializeField] private TextMeshPro letterText;
     [SerializeField] private SpriteRenderer tileSprite;
-    private GameObject textsContainer;
+    [SerializeField] private GameObject textsContainer;
 
-    void Awake()
+    private void Awake()
     {
-        textsContainer = scoreText.transform.parent.gameObject;
-    }
-
-    /// <summary>
-    /// Set the sprite of the tile
-    /// </summary>
-    /// <param name="sprite">Sprite to set</param>
-    public void SetSprite(Sprite sprite)
-    {
-        if (tileSprite != null && sprite != null)
+        if (textsContainer == null && scoreText != null)
         {
-            tileSprite.sprite = sprite;
+            textsContainer = scoreText.transform.parent.gameObject;
         }
     }
 
-    /// <summary>
-    /// Set the color of the tile
-    /// </summary>
-    /// <param name="color">Color to set</param>
-    public void SetColor(Color color)
+    public void Apply(TileState state, VisualSettings visualSettings)
     {
-        if (tileSprite != null)
+        if (visualSettings == null)
         {
-            tileSprite.color = color;
+            return;
         }
-    }
 
-    /// <summary>
-    /// Apply visual state to the tile
-    /// </summary>
-    /// <param name="state">Tile state to apply</param>
-    /// <param name="visualSettings">Visual settings to use</param>
-    public void ApplyVisualForState(TileState state, VisualSettings visualSettings)
-    {
-        if (visualSettings == null) return;
-        
         switch (state)
         {
             case TileState.Clickable:
-                SetSprite(visualSettings.openedSprite);
-                SetColor(visualSettings.openedColor);
+                tileSprite.sprite = visualSettings.openedSprite;
+                tileSprite.color = visualSettings.openedColor;
                 textsContainer.SetActive(true);
                 break;
+
             case TileState.Potential:
-                SetSprite(visualSettings.closedSprite);
-                SetColor(visualSettings.openedColor);
+                tileSprite.sprite = visualSettings.closedSprite;
+                tileSprite.color = visualSettings.openedColor;
                 textsContainer.SetActive(false);
                 break;
+
             case TileState.Blocked:
-                SetSprite(visualSettings.closedSprite);
-                SetColor(visualSettings.closedColor);
+                tileSprite.sprite = visualSettings.closedSprite;
+                tileSprite.color = visualSettings.closedColor;
                 textsContainer.SetActive(false);
                 break;
         }
     }
 
-    /// <summary>
-    /// Set the score text
-    /// </summary>
-    /// <param name="score">Score value to display</param>
-    public void SetScoreText(int score)
+    /// <summary>Two digit scores are drawn as two glyphs joined by a plus.</summary>
+    public void SetScore(int score)
     {
-        if (scoreText != null)
+        if (scoreText == null)
         {
-            if (score >= 10)
-            {
-                int tensDigit = score / 10;
-                int onesDigit = score % 10;
-                scoreText.text = $"<sprite index={tensDigit}>+<sprite index={onesDigit}>";
-            }
-            else
-            {
-                scoreText.text = $"<sprite index={score}>";
-            }
+            return;
         }
+
+        scoreText.text = score >= 10
+            ? $"<sprite index={score / 10}>+<sprite index={score % 10}>"
+            : $"<sprite index={score}>";
     }
 
-    /// <summary>
-    /// Set the letter text
-    /// </summary>
-    /// <param name="letter">Letter to display</param>
-    public void SetLetterText(char letter)
+    public void SetLetter(char letter)
     {
         if (letterText != null)
         {
             letterText.text = $"<sprite name={letter}>";
         }
     }
-
-    /// <summary>
-    /// Move the tile to a new local position
-    /// </summary>
-    /// <param name="newPosition">New local position</param>
-    public void MoveLocalPosition(Vector3 newPosition)
-    {
-        transform.localPosition = newPosition;
-    }
-} 
+}
