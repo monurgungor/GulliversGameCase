@@ -83,3 +83,7 @@ crashlytics-build.properties
 /[Aa]ssets/Screenshots.meta
 /Captures/
 /.utmp/
+
+# Written by the performance test runner when tests execute
+/[Aa]ssets/[Rr]esources/PerformanceTestRun*.json
+/[Aa]ssets/[Rr]esources/PerformanceTestRun*.json.meta
