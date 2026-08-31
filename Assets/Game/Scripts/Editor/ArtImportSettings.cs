@@ -70,7 +70,9 @@ public class ArtImportSettings : AssetPostprocessor
     private static void ApplySpriteRules(TextureImporter importer, bool isAtlased)
     {
         importer.textureType = TextureImporterType.Sprite;
-        importer.spriteImportMode = SpriteImportMode.Single;
+        // The sprite mode is an authoring decision: several sheets here are set
+        // to Multiple with named sub-sprites, and forcing Single throws those
+        // away along with every reference to them.
         importer.alphaIsTransparency = true;
         importer.mipmapEnabled = false;
         importer.isReadable = false;

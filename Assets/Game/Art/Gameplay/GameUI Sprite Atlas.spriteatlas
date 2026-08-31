@@ -77,35 +77,35 @@ SpriteAtlas:
     isAtlasV2: 0
     cachedData: {fileID: 0}
     packedSpriteRenderDataKeys:
-    - 9a87bff4b51d105499a4da8751a9ca8a: 21300000
+    - 9a87bff4b51d105499a4da8751a9ca8a: -1457978547
     - 36bf472565e9ff64198060332cae2191: 21300000
     - bd3479e6fd191b84989289362cedc89c: 21300000
     - 78712e49f85bcfa45abc5daeb36f1415: 21300000
     - 581affc95687dff4eb7e0c2689d64afb: 21300000
-    - 2b65882bed012a149bb9d0d40c56b0b9: 21300000
+    - 2b65882bed012a149bb9d0d40c56b0b9: -1132417342
     - b2d6bdac7afd05b439381096a2e39532: 21300000
     - 67d87eadb196dfa49af718fdc1c036cd: 21300000
     - cbb7cd1ecbe93bc45880ec15b3e87386: 21300000
     - b6f00abebf15d20419cc2c61e00c90d6: 21300000
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
-  - {fileID: 21300000, guid: 9a87bff4b51d105499a4da8751a9ca8a, type: 3}
+  - {fileID: -1457978547, guid: 9a87bff4b51d105499a4da8751a9ca8a, type: 3}
   - {fileID: 21300000, guid: 36bf472565e9ff64198060332cae2191, type: 3}
   - {fileID: 21300000, guid: bd3479e6fd191b84989289362cedc89c, type: 3}
   - {fileID: 21300000, guid: 78712e49f85bcfa45abc5daeb36f1415, type: 3}
   - {fileID: 21300000, guid: 581affc95687dff4eb7e0c2689d64afb, type: 3}
-  - {fileID: 21300000, guid: 2b65882bed012a149bb9d0d40c56b0b9, type: 3}
+  - {fileID: -1132417342, guid: 2b65882bed012a149bb9d0d40c56b0b9, type: 3}
   - {fileID: 21300000, guid: b2d6bdac7afd05b439381096a2e39532, type: 3}
   - {fileID: 21300000, guid: 67d87eadb196dfa49af718fdc1c036cd, type: 3}
   - {fileID: 21300000, guid: cbb7cd1ecbe93bc45880ec15b3e87386, type: 3}
   - {fileID: 21300000, guid: b6f00abebf15d20419cc2c61e00c90d6, type: 3}
   m_PackedSpriteNamesToIndex:
-  - BOARD_HOLDER
+  - BOARD_HOLDER_0
   - GAMESLOT
   - COREGAME_UNDO
   - GAMETILE_PURPLE
   - GAMETILE
-  - COREGAME_HOLDER
+  - COREGAME_HOLDER_0
   - WTG_WIN_SHINE
   - COREGAME_CHECK
   - STAR_BASE
