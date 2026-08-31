@@ -6,8 +6,10 @@ using System.Collections.Generic;
 ///
 /// The search walks the free tiles depth first and drops any branch whose
 /// letters no longer start a word, which is what keeps a fifty tile board cheap.
-/// It mutates one set of arrays and undoes every step on the way back out, so a
-/// whole search allocates nothing after the first level is loaded.
+/// The recursion itself allocates nothing: it mutates preallocated arrays and
+/// undoes every step on the way back out. Only the setup allocates, one small
+/// child index array per tile, plus one string per word the search actually
+/// finds so it can be checked against the words already played.
 /// </summary>
 public sealed class DeadlockSolver
 {

@@ -195,10 +195,19 @@ public class TileManager : MonoBehaviour
             return;
         }
 
+        // The submit animation runs for about a second and the board stays live,
+        // so letters the player tapped meanwhile are sitting in the slots. Undo
+        // can always bring them back, so they count as playable and belong in
+        // the snapshot; leaving them out ends the level while a word is in hand.
         boardSnapshot.Clear();
         foreach (int tileId in onBoard)
         {
             boardSnapshot[tileId] = tiles[tileId].TileData;
+        }
+
+        foreach (Tile tile in selected)
+        {
+            boardSnapshot[tile.TileData.Id] = tile.TileData;
         }
 
         string playableWord;
