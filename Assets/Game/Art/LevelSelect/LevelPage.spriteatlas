@@ -2,6 +2,7 @@
 %TAG !u! tag:unity3d.com,2011:
 --- !u!687078895 &4343727234628468602
 SpriteAtlas:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -21,7 +22,7 @@ SpriteAtlas:
       crunchedCompression: 0
       sRGB: 1
     platformSettings:
-    - serializedVersion: 3
+    - serializedVersion: 4
       m_BuildTarget: DefaultTexturePlatform
       m_MaxTextureSize: 1024
       m_ResizeAlgorithm: 0
@@ -31,6 +32,33 @@ SpriteAtlas:
       m_CrunchedCompression: 0
       m_AllowsAlphaSplitting: 0
       m_Overridden: 0
+      m_IgnorePlatformSupport: 0
+      m_AndroidETC2FallbackOverride: 0
+      m_ForceMaximumCompressionQuality_BC6H_BC7: 0
+    - serializedVersion: 4
+      m_BuildTarget: Android
+      m_MaxTextureSize: 2048
+      m_ResizeAlgorithm: 0
+      m_TextureFormat: 50
+      m_TextureCompression: 1
+      m_CompressionQuality: 50
+      m_CrunchedCompression: 0
+      m_AllowsAlphaSplitting: 0
+      m_Overridden: 1
+      m_IgnorePlatformSupport: 0
+      m_AndroidETC2FallbackOverride: 0
+      m_ForceMaximumCompressionQuality_BC6H_BC7: 0
+    - serializedVersion: 4
+      m_BuildTarget: iOS
+      m_MaxTextureSize: 2048
+      m_ResizeAlgorithm: 0
+      m_TextureFormat: 50
+      m_TextureCompression: 1
+      m_CompressionQuality: 50
+      m_CrunchedCompression: 0
+      m_AllowsAlphaSplitting: 0
+      m_Overridden: 1
+      m_IgnorePlatformSupport: 0
       m_AndroidETC2FallbackOverride: 0
       m_ForceMaximumCompressionQuality_BC6H_BC7: 0
     packingSettings:
@@ -38,7 +66,7 @@ SpriteAtlas:
       padding: 4
       blockOffset: 1
       allowAlphaSplitting: 0
-      enableRotation: 1
+      enableRotation: 0
       enableTightPacking: 0
       enableAlphaDilation: 0
     secondaryTextureSettings: {}
@@ -48,31 +76,44 @@ SpriteAtlas:
     bindAsDefault: 1
     isAtlasV2: 0
     cachedData: {fileID: 0}
+    packedSpriteRenderDataKeys:
+    - 9bc9921079e62e9489538ec5f0384843: 21300000
+    - bd4b56b2cbbbd724899ab01e6f750e7a: 21300000
+    - e95cf4257a7b21a45927a80611486cfa: 21300000
+    - dd58967645b07dd44b5d61e7ac356b94: 21300000
+    - e464120795ddb884f9f15fa94e3d1623: 21300000
+    - e57f6937a98427e49ac3caab0082732a: 21300000
+    - 529bd66af24fe77438bc0f8e377a6d9e: 21300000
+    - a022ae7a4eb108745b2b06aa8d3adb55: 21300000
+    - 90d0fbfb183a04349831bdbaec59d4af: 21300000
+    - 2b8168cc3f6cff44fbf14f32470571cb: 21300000
+    - b0ea447f4e41df94a91a88f55c272b1a: 21300000
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
   - {fileID: 21300000, guid: 9bc9921079e62e9489538ec5f0384843, type: 3}
-  - {fileID: 1056485633, guid: bd4b56b2cbbbd724899ab01e6f750e7a, type: 3}
+  - {fileID: 21300000, guid: bd4b56b2cbbbd724899ab01e6f750e7a, type: 3}
   - {fileID: 21300000, guid: e95cf4257a7b21a45927a80611486cfa, type: 3}
   - {fileID: 21300000, guid: dd58967645b07dd44b5d61e7ac356b94, type: 3}
-  - {fileID: -416967884, guid: e464120795ddb884f9f15fa94e3d1623, type: 3}
-  - {fileID: 959134410, guid: e57f6937a98427e49ac3caab0082732a, type: 3}
-  - {fileID: -1516486133, guid: 529bd66af24fe77438bc0f8e377a6d9e, type: 3}
+  - {fileID: 21300000, guid: e464120795ddb884f9f15fa94e3d1623, type: 3}
+  - {fileID: 21300000, guid: e57f6937a98427e49ac3caab0082732a, type: 3}
+  - {fileID: 21300000, guid: 529bd66af24fe77438bc0f8e377a6d9e, type: 3}
   - {fileID: 21300000, guid: a022ae7a4eb108745b2b06aa8d3adb55, type: 3}
-  - {fileID: -1609001111, guid: 90d0fbfb183a04349831bdbaec59d4af, type: 3}
+  - {fileID: 21300000, guid: 90d0fbfb183a04349831bdbaec59d4af, type: 3}
   - {fileID: 21300000, guid: 2b8168cc3f6cff44fbf14f32470571cb, type: 3}
-  - {fileID: 412431731, guid: b0ea447f4e41df94a91a88f55c272b1a, type: 3}
+  - {fileID: 21300000, guid: b0ea447f4e41df94a91a88f55c272b1a, type: 3}
   m_PackedSpriteNamesToIndex:
   - LOCK
-  - POPUP_CONTAINER_SHINE_0
+  - POPUP_CONTAINER_SHINE
   - POPUP_TITLE
   - POPUP_SCROLL_SHADE
-  - POPUP_CONTAINER_COLOR_0
-  - POPUP_BASE_COLOR_0
-  - POPUP_BASE_SHADE_0
+  - POPUP_CONTAINER_COLOR
+  - POPUP_BASE_COLOR
+  - POPUP_BASE_SHADE
   - X
-  - POPUP_BASE_SHADOW_0
+  - POPUP_BASE_SHADOW
   - LEVELCARD_HOLDER
-  - POPUP_CONTAINER_SHADE_0
+  - POPUP_CONTAINER_SHADE
   m_RenderDataMap: {}
   m_Tag: LevelPage
   m_IsVariant: 0
+  m_Guid: 8e4b8672220fb51458dcf09e5fa5a822

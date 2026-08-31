@@ -2,6 +2,7 @@
 %TAG !u! tag:unity3d.com,2011:
 --- !u!687078895 &4343727234628468602
 SpriteAtlas:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -21,7 +22,7 @@ SpriteAtlas:
       crunchedCompression: 0
       sRGB: 1
     platformSettings:
-    - serializedVersion: 3
+    - serializedVersion: 4
       m_BuildTarget: DefaultTexturePlatform
       m_MaxTextureSize: 2048
       m_ResizeAlgorithm: 0
@@ -31,6 +32,33 @@ SpriteAtlas:
       m_CrunchedCompression: 0
       m_AllowsAlphaSplitting: 0
       m_Overridden: 0
+      m_IgnorePlatformSupport: 0
+      m_AndroidETC2FallbackOverride: 0
+      m_ForceMaximumCompressionQuality_BC6H_BC7: 0
+    - serializedVersion: 4
+      m_BuildTarget: Android
+      m_MaxTextureSize: 2048
+      m_ResizeAlgorithm: 0
+      m_TextureFormat: 50
+      m_TextureCompression: 1
+      m_CompressionQuality: 50
+      m_CrunchedCompression: 0
+      m_AllowsAlphaSplitting: 0
+      m_Overridden: 1
+      m_IgnorePlatformSupport: 0
+      m_AndroidETC2FallbackOverride: 0
+      m_ForceMaximumCompressionQuality_BC6H_BC7: 0
+    - serializedVersion: 4
+      m_BuildTarget: iOS
+      m_MaxTextureSize: 2048
+      m_ResizeAlgorithm: 0
+      m_TextureFormat: 50
+      m_TextureCompression: 1
+      m_CompressionQuality: 50
+      m_CrunchedCompression: 0
+      m_AllowsAlphaSplitting: 0
+      m_Overridden: 1
+      m_IgnorePlatformSupport: 0
       m_AndroidETC2FallbackOverride: 0
       m_ForceMaximumCompressionQuality_BC6H_BC7: 0
     packingSettings:
@@ -38,7 +66,7 @@ SpriteAtlas:
       padding: 4
       blockOffset: 1
       allowAlphaSplitting: 0
-      enableRotation: 1
+      enableRotation: 0
       enableTightPacking: 0
       enableAlphaDilation: 0
     secondaryTextureSettings: {}
@@ -48,25 +76,36 @@ SpriteAtlas:
     bindAsDefault: 1
     isAtlasV2: 0
     cachedData: {fileID: 0}
+    packedSpriteRenderDataKeys:
+    - 9a87bff4b51d105499a4da8751a9ca8a: 21300000
+    - 36bf472565e9ff64198060332cae2191: 21300000
+    - bd3479e6fd191b84989289362cedc89c: 21300000
+    - 78712e49f85bcfa45abc5daeb36f1415: 21300000
+    - 581affc95687dff4eb7e0c2689d64afb: 21300000
+    - 2b65882bed012a149bb9d0d40c56b0b9: 21300000
+    - b2d6bdac7afd05b439381096a2e39532: 21300000
+    - 67d87eadb196dfa49af718fdc1c036cd: 21300000
+    - cbb7cd1ecbe93bc45880ec15b3e87386: 21300000
+    - b6f00abebf15d20419cc2c61e00c90d6: 21300000
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
-  - {fileID: -1457978547, guid: 9a87bff4b51d105499a4da8751a9ca8a, type: 3}
+  - {fileID: 21300000, guid: 9a87bff4b51d105499a4da8751a9ca8a, type: 3}
   - {fileID: 21300000, guid: 36bf472565e9ff64198060332cae2191, type: 3}
   - {fileID: 21300000, guid: bd3479e6fd191b84989289362cedc89c, type: 3}
   - {fileID: 21300000, guid: 78712e49f85bcfa45abc5daeb36f1415, type: 3}
   - {fileID: 21300000, guid: 581affc95687dff4eb7e0c2689d64afb, type: 3}
-  - {fileID: -1132417342, guid: 2b65882bed012a149bb9d0d40c56b0b9, type: 3}
+  - {fileID: 21300000, guid: 2b65882bed012a149bb9d0d40c56b0b9, type: 3}
   - {fileID: 21300000, guid: b2d6bdac7afd05b439381096a2e39532, type: 3}
   - {fileID: 21300000, guid: 67d87eadb196dfa49af718fdc1c036cd, type: 3}
   - {fileID: 21300000, guid: cbb7cd1ecbe93bc45880ec15b3e87386, type: 3}
   - {fileID: 21300000, guid: b6f00abebf15d20419cc2c61e00c90d6, type: 3}
   m_PackedSpriteNamesToIndex:
-  - BOARD_HOLDER_0
+  - BOARD_HOLDER
   - GAMESLOT
   - COREGAME_UNDO
   - GAMETILE_PURPLE
   - GAMETILE
-  - COREGAME_HOLDER_0
+  - COREGAME_HOLDER
   - WTG_WIN_SHINE
   - COREGAME_CHECK
   - STAR_BASE
@@ -74,3 +113,4 @@ SpriteAtlas:
   m_RenderDataMap: {}
   m_Tag: GameUI Sprite Atlas
   m_IsVariant: 0
+  m_Guid: b83a0a2b05c33c8468f65b9a793e98fe
