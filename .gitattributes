@@ -1,0 +1,53 @@
+# Unity serializes scenes, prefabs and assets as YAML. Without this, git treats
+# them as opaque text and merges produce files Unity cannot open.
+*.unity           merge=unityyamlmerge eol=lf
+*.prefab          merge=unityyamlmerge eol=lf
+*.asset           merge=unityyamlmerge eol=lf
+*.mat             merge=unityyamlmerge eol=lf
+*.anim            merge=unityyamlmerge eol=lf
+*.controller      merge=unityyamlmerge eol=lf
+*.overrideController merge=unityyamlmerge eol=lf
+*.physicMaterial  merge=unityyamlmerge eol=lf
+*.physicsMaterial2D merge=unityyamlmerge eol=lf
+*.playable        merge=unityyamlmerge eol=lf
+*.mask            merge=unityyamlmerge eol=lf
+*.brush           merge=unityyamlmerge eol=lf
+*.flare           merge=unityyamlmerge eol=lf
+*.fontsettings    merge=unityyamlmerge eol=lf
+*.guiskin         merge=unityyamlmerge eol=lf
+*.giparams        merge=unityyamlmerge eol=lf
+*.meta            merge=unityyamlmerge eol=lf
+*.spriteatlas     merge=unityyamlmerge eol=lf
+*.terrainlayer    merge=unityyamlmerge eol=lf
+*.mixer           merge=unityyamlmerge eol=lf
+*.shadervariants  merge=unityyamlmerge eol=lf
+*.scenetemplate   merge=unityyamlmerge eol=lf
+
+# Source and text stay diffable.
+*.cs              text diff=csharp eol=lf
+*.json            text eol=lf
+*.txt             text eol=lf
+*.md              text eol=lf
+*.shader          text eol=lf
+*.hlsl            text eol=lf
+*.asmdef          text eol=lf
+*.gitattributes   text eol=lf
+*.gitignore       text eol=lf
+
+# Binaries never merge and should not be diffed.
+*.png             binary
+*.jpg             binary
+*.jpeg            binary
+*.psd             binary
+*.tif             binary
+*.ttf             binary
+*.otf             binary
+*.fbx             binary
+*.wav             binary
+*.mp3             binary
+*.ogg             binary
+*.tgz             binary
+*.dll             binary
+*.a               binary
+*.so              binary
+*.pdf             binary
