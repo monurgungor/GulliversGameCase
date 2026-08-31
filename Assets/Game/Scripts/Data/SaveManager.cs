@@ -16,11 +16,18 @@ public class SaveManager : MonoBehaviour
 
     public static event Action<PlayerData> DataLoaded;
 
-    private string SaveFilePath => Path.Combine(Application.persistentDataPath, saveFileName);
+    // Resolved on the main thread in Awake, because Application.persistentDataPath
+    // cannot be read from the thread the load runs on.
+    private string saveFilePath;
 
     public PlayerData PlayerData { get; private set; }
 
     public bool IsDataLoaded { get; private set; }
+
+    private void Awake()
+    {
+        saveFilePath = Path.Combine(Application.persistentDataPath, saveFileName);
+    }
 
     public async Task LoadAsync()
     {
@@ -38,7 +45,7 @@ public class SaveManager : MonoBehaviour
 
         try
         {
-            File.WriteAllText(SaveFilePath, JsonConvert.SerializeObject(PlayerData, Formatting.Indented));
+            File.WriteAllText(saveFilePath, JsonConvert.SerializeObject(PlayerData, Formatting.Indented));
         }
         catch (Exception exception)
         {
@@ -71,12 +78,12 @@ public class SaveManager : MonoBehaviour
     {
         try
         {
-            if (!File.Exists(SaveFilePath))
+            if (!File.Exists(saveFilePath))
             {
                 return new PlayerData();
             }
 
-            return JsonConvert.DeserializeObject<PlayerData>(File.ReadAllText(SaveFilePath)) ?? new PlayerData();
+            return JsonConvert.DeserializeObject<PlayerData>(File.ReadAllText(saveFilePath)) ?? new PlayerData();
         }
         catch (Exception exception)
         {

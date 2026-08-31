@@ -15,9 +15,9 @@ public class GameInstaller : MonoInstaller
 
     public override void InstallBindings()
     {
-        Container.Bind<SaveManager>().FromComponentOnRoot().AsSingle();
-        Container.Bind<SceneController>().FromComponentOnRoot().AsSingle();
-        Container.Bind<LevelController>().FromComponentOnRoot().AsSingle();
+        Container.Bind<SaveManager>().FromComponentInHierarchy().AsSingle();
+        Container.Bind<SceneController>().FromComponentInHierarchy().AsSingle();
+        Container.Bind<LevelController>().FromComponentInHierarchy().AsSingle();
 
         Container.Bind<LetterSettings>().FromInstance(letterSettings).AsSingle();
         Container.Bind<VisualSettings>().FromInstance(visualSettings).AsSingle();

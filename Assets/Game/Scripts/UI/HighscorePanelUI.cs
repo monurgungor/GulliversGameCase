@@ -37,7 +37,7 @@ public class HighscorePanelUI : MonoBehaviour
     private void Awake()
     {
         highscoreCanvas.enabled = false;
-        mainMenuButton.GetComponent<Button>().onClick.AddListener(gameStateManager.ReturnToMainMenu);
+        mainMenuButton.GetComponent<Button>().onClick.AddListener(OnMainMenuClicked);
     }
 
     private void OnEnable()
@@ -48,6 +48,11 @@ public class HighscorePanelUI : MonoBehaviour
     private void OnDisable()
     {
         GameStateManager.GameEndProcessed -= Show;
+    }
+
+    private void OnMainMenuClicked()
+    {
+        gameStateManager.ReturnToMainMenu();
     }
 
     private void Show(GameEndData result)
