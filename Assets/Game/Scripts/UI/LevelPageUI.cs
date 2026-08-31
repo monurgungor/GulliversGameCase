@@ -37,9 +37,11 @@ public class LevelPageUI : MonoBehaviour
     public void CelebrateNewlyUnlockedLevel()
     {
         int levelId = LevelProgress.ConsumeJustUnlocked();
-        int index = levelId - 1;
+        // Look the row up by id rather than by position, so a gap in the level
+        // files cannot make a different level play the unlock animation.
+        int index = slots.FindIndex(slot => slot.LevelId == levelId);
 
-        if (index < 0 || index >= slots.Count)
+        if (index < 0)
         {
             return;
         }

@@ -18,6 +18,9 @@ public class LevelSlotUI : MonoBehaviour
 
     private int levelId;
 
+    /// <summary>Which level this row opens.</summary>
+    public int LevelId => levelId;
+
     public void Initialize(LevelData level)
     {
         levelId = level.levelId;
