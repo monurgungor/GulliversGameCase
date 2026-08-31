@@ -121,7 +121,11 @@ public class LevelController : MonoBehaviour
 
         foreach (LevelInfo info in LevelCatalog.Levels)
         {
-            bool unlocked = info.Id == 1 || playerData.IsLevelUnlocked(info.Id);
+            // Every level is open in this build. It is a portfolio project, so a
+            // reviewer has to be able to open any board straight away. The
+            // progression below still runs and still saves, which means putting
+            // the check back is all it takes to lock the levels again.
+            bool unlocked = true;
             var level = new LevelData(info.Id, info.Title, playerData.GetHighScore(info.Id), unlocked);
 
             levels[info.Id] = level;
